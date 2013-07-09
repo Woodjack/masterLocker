@@ -9,6 +9,9 @@ application = tornado.web.Application([
     (r"/", MainHandler),
 ])
 
+# server info
+port = int(os.environ.get('PORT', '8080'))
+
 if __name__ == "__main__":
-    application.listen(8888)
+    application.listen(port)
     tornado.ioloop.IOLoop.instance().start()
