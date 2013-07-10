@@ -21,13 +21,12 @@ define("port", default=port, help="run on the given port", type=int) #port optio
 class Application(tornado.web.Application):
     def __init__(self):
         handlers = [
-        	(r"/rest/post/", postRequestHandler),
+            (r"/rest/post", postRequestHandler),
             (r"/rest/get", getRequestHandler),
         	(r"/static/(.*)", tornado.web.StaticFileHandler, {"path": "static"}),
         	(r"/", indexhtmlhandler)
         ]
         tornado.web.Application.__init__(self, handlers, debug=True)
-
 
 
 
@@ -43,10 +42,17 @@ class getRequestHandler(tornado.web.RequestHandler):
 
 class postRequestHandler(tornado.web.RequestHandler):
     def get(self):
-    	data = {}
-        data['name'] = self.get_arguement('name')
+        data={}
+        data['name'] = self.get_argument('name')
+        data['cookie'] = self.get_argument('cookie')
+        data['loc'] = {}
+        data['loc']['x'] = self.get_argument('x')
+        data['loc']['y'] = self.get_argument('y')
+        results = rest.postLocation(data)
         self.write(data['name'])
-        #self.write( rest.pushLocation(urlInput) )
+        self.write(results)
+
+
 
 
 
