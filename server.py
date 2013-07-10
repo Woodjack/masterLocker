@@ -21,7 +21,7 @@ define("port", default=port, help="run on the given port", type=int) #port optio
 class Application(tornado.web.Application):
     def __init__(self):
         handlers = [
-        	(r"/rest/post", postRequestHandler),
+            (r"/rest/post", postRequestHandler),
             (r"/rest/get", getRequestHandler),
         	(r"/static/(.*)", tornado.web.StaticFileHandler, {"path": "static"}),
         	(r"/", indexhtmlhandler)
