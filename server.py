@@ -26,7 +26,11 @@ define("port", default=port, help="run on the given port", type=int)
 
 class Application(tornado.web.Application):
     def __init__(self):
-        handlers = [(r"/(\w+)", RequestHandler)]
+        handlers = [
+        	(r"/rest/(\w+)", RequestHandler),
+        	(r"/static/(.*)", tornado.web.StaticFileHandler, {"path": "static"}),
+        	(r"/", indexhtmlhandler)
+        ]
         tornado.web.Application.__init__(self, handlers, debug=True)
 
 
@@ -42,6 +46,9 @@ def getMONGO():
     else:
         return("No Results")
 
+class indexhtmlhandler(tornado.web.RequestHandler):
+	def get(self):
+		self.render("static/index.html")
 
 class RequestHandler(tornado.web.RequestHandler):
     def get(self, urlInput):
