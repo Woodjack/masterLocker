@@ -18,6 +18,29 @@ def getMONGO():
 
 
 
+def getCurrentMONGO():
+	coll = db.locations
+	mongoResults = coll.find({},{'_id':0})
+	if mongoResults:
+	    results = dumps(mongoResults)
+	    return(results)
+	else:
+	    return('No Results')
+
+
+
+def getTailMovementMONGO():
+	coll = db.locations
+	mongoResults = coll.find({},{'_id':0})
+	if mongoResults:
+	    results = dumps(mongoResults)
+	    return(results)
+	else:
+	    return('No Results')
+
+
+
+
 def postLocation(newLocation):
 	coll = db.locations
 	coll.insert(newLocation)
