@@ -10,6 +10,7 @@
     <script src="static/vendor/leaflet/leaflet-src.js"></script>
     <script src="static/dist/esri-leaflet.min.js"></script>
     <script src="static/vendor/geoservices/geoservices.js"></script>
+    <script src="static/js/jquery-2.0.3.min.js"></script>
   </head>
   <body>
     <div id="map"></div>
@@ -25,6 +26,8 @@
           .bindPopup("You are within " + radius + " meters from this point").openPopup();
 
         L.circle(e.latlng, radius).addTo(map);
+        console.log(e);
+
       }
 
       function onLocationError(e) {
@@ -35,6 +38,24 @@
       map.on('locationerror', onLocationError);
 
       map.locate({setView: true, maxZoom: 16});
+
+      setInterval(function() {
+        $.ajax({
+          url: 'rest/get',
+          success: function(data) {
+            for (var i=0; i<data.length; i++) {
+              var person = data[i];
+              console.log(person);
+              var platlng = L.latLng(person.loc.y, person.loc.x);
+              L.marker(platlng).addTo(map);
+/*              var myMarker = L.circleMarker(platlng, 
+                { title: person.name })
+                .addTo(map); */
+              }
+            },
+          dataType: 'json'
+        });
+      }, 30000);
 
     </script>
   </body>

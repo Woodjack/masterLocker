@@ -9,7 +9,7 @@ db = connection.app16815592
 
 def getMONGO():
 	coll = db.locations
-	mongoResults = coll.find()
+	mongoResults = coll.find({},{'_id':0})
 	if mongoResults:
 	    results = dumps(mongoResults)
 	    return(results)
