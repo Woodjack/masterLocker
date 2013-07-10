@@ -15,6 +15,10 @@ from bson.json_util import dumps
 
 port = int(os.environ.get('PORT', '8080'))
 
+
+htmlDocument = '"<HTML>  hello world \n</HTML>"'
+
+
 #port options for webServer
 from tornado.options import define, options
 define("port", default=port, help="run on the given port", type=int)
@@ -23,36 +27,32 @@ define("port", default=port, help="run on the given port", type=int)
 class Application(tornado.web.Application):
     def __init__(self):
         handlers = [(r"/(\w+)", RequestHandler)]
-		mongohq_url = 'mongodb://pull:pull@dharma.mongohq.com:10014/app16815592'
-		connection = pymongo.Connection(mongohq_url)
-		db = connection.app16815592
         tornado.web.Application.__init__(self, handlers, debug=True)
 
 
 def getMONGO():
-	coll = self.application.db.location
-    urlInput = str(urlInput)
-        query = {}
-        mongoResults = coll.find( query, {"_id":0} )
-        if mongoResults:
-        	results = (dumps(mongoResults))
-            return(results)
-        else:
-            return("No Results")
-
+    connection = pymongo.Connection( 'mongodb://pull:pull@dharma.mongohq.com:10014/app16815592' )
+    db = connection.app16815592
+    coll = db.location
+    query = {}
+    mongoResults = coll.find()
+    if mongoResults:
+    	results = dumps(mongoResults)
+        return(results)
+    else:
+        return("No Results")
 
 
 class RequestHandler(tornado.web.RequestHandler):
     def get(self, urlInput):
-        
+    	urlInput = str(urlInput)
         if urlInput == "home":
-        	#return html
-        elif urlInput == "get"
+        	self.write(htmlDocument)
+        elif urlInput == "get":
             self.write( getMONGO() )
         else:
             self.set_status(404)
             self.write({"error": "word not found"})
-
 
 
 if __name__ == "__main__":
