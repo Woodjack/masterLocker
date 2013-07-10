@@ -15,6 +15,8 @@
   <body>
     <div id="map"></div>
     <script>
+      var name = prompt("what's your name?", 'jack');
+
       var map = L.map('map');
       // ArcGIS Online Basemaps - Streets, Topographic, Gray, Gray Labels, Ocean, NationalGeographic, Imagery, ImageryLabels
       L.esri.basemapLayer("Streets").addTo(map);
@@ -26,6 +28,14 @@
           .bindPopup("You are within " + radius + " meters from this point").openPopup();
 
         L.circle(e.latlng, radius).addTo(map);
+
+        $.get('rest/post',{
+          name: name,
+          cookie: '123',
+          x: e.latlng.lng,
+          y: e.latlng.lat
+        });
+
         console.log(e);
 
       }
@@ -55,7 +65,7 @@
             },
           dataType: 'json'
         });
-      }, 30000);
+      }, 15000);
 
     </script>
   </body>
