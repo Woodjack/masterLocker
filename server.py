@@ -5,42 +5,48 @@ import tornado.options
 import tornado.web
 import pymongo
 import rest
-#This is used to produce a properly formated json-array,
-from bson.json_util import dumps
+from bson.json_util import dumps  ##This is used to produce a properly formated json-array,
 
 
 port = int(os.environ.get('PORT', '8080'))
 
 
-htmlDocument = '"<HTML>  hello world \n</HTML>"'
 
-#port options for webServer
 from tornado.options import define, options
-define("port", default=port, help="run on the given port", type=int)
+define("port", default=port, help="run on the given port", type=int) #port options for webServer
+
+
+
 
 class Application(tornado.web.Application):
     def __init__(self):
         handlers = [
-        	(r"/rest/(\w+)", RequestHandler),
+        	(r"/rest/push/(\w+)", pushRequestHandler),
+            (r"/rest/get", getRequestHandler),
         	(r"/static/(.*)", tornado.web.StaticFileHandler, {"path": "static"}),
         	(r"/", indexhtmlhandler)
         ]
         tornado.web.Application.__init__(self, handlers, debug=True)
 
+
+
+
 class indexhtmlhandler(tornado.web.RequestHandler):
 	def get(self):
 		self.render("static/index.html")
 
-class RequestHandler(tornado.web.RequestHandler):
+
+class getRequestHandler(tornado.web.RequestHandler):
+    def get(self):
+        self.write( rest.getMONGO() )
+
+
+class pushRequestHandler(tornado.web.RequestHandler):
     def get(self, urlInput):
     	urlInput = str(urlInput)
-        if urlInput == "home":
-        	self.write(htmlDocument)
-        elif urlInput == "get":
-        	self.write( rest.getMONGO() )
-        else:
-            self.set_status(404)
-            self.write({"error": "word not found"})
+        self.write(urlInput)
+        self.write( rest.pushLocation(urlInput) )
+
 
 
 if __name__ == "__main__":
