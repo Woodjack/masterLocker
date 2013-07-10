@@ -21,7 +21,7 @@ define("port", default=port, help="run on the given port", type=int) #port optio
 class Application(tornado.web.Application):
     def __init__(self):
         handlers = [
-        	(r"/rest/push/(\w+)", pushRequestHandler),
+        	(r"/rest/post/", pushRequestHandler),
             (r"/rest/get", getRequestHandler),
         	(r"/static/(.*)", tornado.web.StaticFileHandler, {"path": "static"}),
         	(r"/", indexhtmlhandler)
@@ -41,11 +41,12 @@ class getRequestHandler(tornado.web.RequestHandler):
         self.write( rest.getMONGO() )
 
 
-class pushRequestHandler(tornado.web.RequestHandler):
-    def get(self, urlInput):
-    	urlInput = str(urlInput)
-        self.write(urlInput)
-        self.write( rest.pushLocation(urlInput) )
+class postRequestHandler(tornado.web.RequestHandler):
+    def get(self):
+    	data = {}
+        data['name'] = self.get_arguement('name')
+        self.write(data['name'])
+        #self.write( rest.pushLocation(urlInput) )
 
 
 
