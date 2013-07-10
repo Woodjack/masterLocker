@@ -1,4 +1,5 @@
 import os
+import datetime
 import pymongo
 from bson.json_util import dumps
 from urlparse import urlparse, parse_qs  #url parsing for query
@@ -19,8 +20,9 @@ def getMONGO():
 
 
 def getCurrentMONGO():
-	coll = db.locations
-	mongoResults = coll.find({},{'_id':0})
+	coll = db.locations	
+	queryLimit = coll.find().distinct('name')
+	mongoResults = coll.find({},{'_id':0}).sort({'date',1).limit(1)
 	if mongoResults:
 	    results = dumps(mongoResults)
 	    return(results)
@@ -28,8 +30,7 @@ def getCurrentMONGO():
 	    return('No Results')
 
 
-
-def getTailMovementMONGO():
+def getTailsMONGO():
 	coll = db.locations
 	mongoResults = coll.find({},{'_id':0})
 	if mongoResults:
@@ -43,5 +44,6 @@ def getTailMovementMONGO():
 
 def postLocation(newLocation):
 	coll = db.locations
+	newLocation['date'] = datetime.datetime.utcnow()
 	coll.insert(newLocation)
 	return("Successful mongodb upload bitches!!! ")
