@@ -1,14 +1,12 @@
 import os
 import datetime
 import pymongo
+from mongodbconf import db
 from bson.json_util import dumps
 from bson.json_util import loads
 import ast
 from urlparse import urlparse, parse_qs  #url parsing for query
 
-mongohq_url = 'mongodb://rest:service@dharma.mongohq.com:10014/app16815592'
-connection = pymongo.Connection(mongohq_url)
-db = connection.app16815592
 
 def getMONGO():
 	coll = db.locations
@@ -18,8 +16,6 @@ def getMONGO():
 	    return(results)
 	else:
 	    return('No Results')
-
-
 
 def getCurrentMONGO():
 	data=[]

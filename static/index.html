@@ -49,10 +49,11 @@
 
       map.locate({setView: true, maxZoom: 17});
 
-      setInterval(function() {
+      getcurrent = function() {
         $.ajax({
           url: 'rest/get',
           success: function(data) {
+            console.log(data);
             for (var i=0; i<data.length; i++) {
               var person = data[i];
               console.log(person.name);
@@ -65,7 +66,10 @@
             },
           dataType: 'json'
         });
-      }, 15000);
+      }
+      
+      getcurrent();
+      setInterval(getcurrent, 15000);
 
     </script>
   </body>
