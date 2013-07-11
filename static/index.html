@@ -24,6 +24,8 @@
       function onLocationFound(e) {
         var radius = e.accuracy / 2;
 
+        debugger;
+
         L.marker(e.latlng).addTo(map)
           .bindPopup("You are within " + radius + " meters from this point").openPopup();
 
@@ -58,7 +60,7 @@
               var person = data[i];
               console.log(person.name);
               var platlng = L.latLng(person.loc.y, person.loc.x);
-              L.marker(platlng).addTo(map);
+              L.marker(platlng).addTo(map).bindPopup(person.name);
 /*              var myMarker = L.circleMarker(platlng, 
                 { title: person.name })
                 .addTo(map); */
