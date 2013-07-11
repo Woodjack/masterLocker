@@ -20,12 +20,18 @@ def getMONGO():
 
 
 def getCurrentMONGO():
+	data=[]
 	coll = db.locations	
-	queryLimit = coll.find().distinct('name')
-	mongoResults = coll.find({},{'_id':0}).sort({'date',1).limit(1)
-	if mongoResults:
-	    results = dumps(mongoResults)
-	    return(results)
+	query = coll.distinct('name')
+	print(query)
+	for person in query:
+		personinfo = coll.find({'name': person},{'_id': 0}).sort('date',1).limit(1)
+		results = dumps(personinfo)
+		data.append(results)
+
+	print(data)
+	if data:
+	    return(dumps(data))
 	else:
 	    return('No Results')
 
