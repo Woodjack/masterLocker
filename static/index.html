@@ -15,24 +15,6 @@
   <body>
     <div id="map"></div>
     <script>
-      getcurrent = function() {
-        $.ajax({
-          url: 'rest/get',
-          success: function(data) {
-            for (var i=0; i<data.length; i++) {
-              var person = data[i];
-              console.log(person.name);
-              var platlng = L.latLng(person.loc.y, person.loc.x);
-              L.marker(platlng).addTo(map);
-/*              var myMarker = L.circleMarker(platlng, 
-                { title: person.name })
-                .addTo(map); */
-              }
-            },
-          dataType: 'json'
-        });
-      }
-
       var name = prompt("what's your name?", 'jack');
 
       var map = L.map('map');
@@ -67,6 +49,25 @@
 
       map.locate({setView: true, maxZoom: 17});
 
+      getcurrent = function() {
+        $.ajax({
+          url: 'rest/get',
+          success: function(data) {
+            console.log(data);
+            for (var i=0; i<data.length; i++) {
+              var person = data[i];
+              console.log(person.name);
+              var platlng = L.latLng(person.loc.y, person.loc.x);
+              L.marker(platlng).addTo(map);
+/*              var myMarker = L.circleMarker(platlng, 
+                { title: person.name })
+                .addTo(map); */
+              }
+            },
+          dataType: 'json'
+        });
+      }
+      
       getcurrent();
       setInterval(getcurrent, 15000);
 
