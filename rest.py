@@ -2,6 +2,7 @@ import os
 import datetime
 import pymongo
 from bson.json_util import dumps
+from bson.json_util import loads
 import ast
 from urlparse import urlparse, parse_qs  #url parsing for query
 
@@ -26,14 +27,12 @@ def getCurrentMONGO():
 	query = coll.distinct('name')
 	for person in query:
 		personinfo = coll.find({'name': person},{'_id': 0}).sort('date',1).limit(1)
-		print(type(personinfo))
 		getResults = dumps(personinfo)
-		x = ast.literal_eval(getResults)
-		data.append(x.pop())
+		data.append( ast.literal_eval(getResults)[0] )
 	if data:
-	    return(str(data))
+	    return( dumps(data) )
 	else:
-	    return('No Results')
+	    return( 'No Results' )
 
 
 
