@@ -2,6 +2,7 @@ import os
 import datetime
 import pymongo
 from bson.json_util import dumps
+import ast
 from urlparse import urlparse, parse_qs  #url parsing for query
 
 mongohq_url = 'mongodb://rest:service@dharma.mongohq.com:10014/app16815592'
@@ -23,17 +24,17 @@ def getCurrentMONGO():
 	data=[]
 	coll = db.locations	
 	query = coll.distinct('name')
-	print(query)
 	for person in query:
 		personinfo = coll.find({'name': person},{'_id': 0}).sort('date',1).limit(1)
-		results = dumps(personinfo)
-		data.append(results)
-
-	print(data)
+		print(type(personinfo))
+		getResults = dumps(personinfo)
+		x = ast.literal_eval(getResults)
+		data.append(x.pop())
 	if data:
-	    return(dumps(data))
+	    return(str(data))
 	else:
 	    return('No Results')
+
 
 
 def getTailsMONGO():
