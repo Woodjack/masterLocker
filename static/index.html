@@ -17,6 +17,8 @@
     <script>
       var name = prompt("what's your name?", 'jack');
 
+      var markers;
+
       var map = L.map('map');
       // ArcGIS Online Basemaps - Streets, Topographic, Gray, Gray Labels, Ocean, NationalGeographic, Imagery, ImageryLabels
       L.esri.basemapLayer("Streets").addTo(map);
@@ -24,21 +26,25 @@
       function onLocationFound(e) {
         var radius = e.accuracy / 2;
 
-        debugger;
+//        debugger;
 
         L.marker(e.latlng).addTo(map)
-          .bindPopup("You are within " + radius + " meters from this point").openPopup();
+          .bindPopup(radius + " meter accuracy");
 
         L.circle(e.latlng, radius).addTo(map);
 
-        $.get('rest/post',{
-          name: name,
-          cookie: '123',
-          x: e.latlng.lng,
-          y: e.latlng.lat
-        });
+        if (radius < 15) {
+          $.get('rest/post',{
+            name: name,
+            cookie: '123',
+            x: e.latlng.lng,
+            y: e.latlng.lat
+          });
 
-        console.log('updated location');
+          console.log('updated location');
+        } else {
+          console.log('location not accurate');
+        }
 
       }
 
@@ -68,6 +74,8 @@
             },
           dataType: 'json'
         });
+
+        map.locate({setView: true, maxZoom: 17});
       }
       
       getcurrent();
