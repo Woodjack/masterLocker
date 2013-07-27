@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Your Geolocation Map</title>
+    <title>where's jack?????</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <link rel="stylesheet" href="static/vendor/leaflet/leaflet.css" />
     <link rel="stylesheet" href="static/dist/esri-leaflet.min.css" />
@@ -21,13 +21,37 @@
       // ArcGIS Online Basemaps - Streets, Topographic, Gray, Gray Labels, Ocean, NationalGeographic, Imagery, ImageryLabels
       L.esri.basemapLayer("Streets").addTo(map);
 
+      var erbodyg = L.layerGroup(),
+      mymarker = L.marker();
+
       function onfirstLocationFound(e) {
         var radius = e.accuracy / 2;
 
-        L.marker(e.latlng).addTo(map)
+        mymarker.setLatLng(e.latlng).addTo(map)
           .bindPopup(radius + " meter accuracy");
 
         L.circle(e.latlng, radius).addTo(map);
+
+        if (radius < 50) {
+          $.get('rest/post',{
+            name: name,
+            cookie: '123',
+            x: e.latlng.lng,
+            y: e.latlng.lat
+          });
+
+          console.log('updated location');
+        } else {
+          console.log('location not accurate');
+        }
+        map.off('locationfound', onfirstLocationFound);
+        map.on('locationfound', onLocationFound);
+      }
+
+      function onLocationFound(e) {
+        var radius = e.accuracy / 2;
+
+        mymarker.setLatLng(e.latlng);
 
         if (radius < 50) {
           $.get('rest/post',{
@@ -56,29 +80,36 @@
       getfirstcurrent = function() {
         map.locate({setView: true, maxZoom: 17});
       }
+
+      function getcurrent() {
+        map.locate({setView: false});
+      }
       
       getfirstcurrent();
 //      setInterval(getcurrent, 15000);
       updatemarkers();
+      setInterval(updatemarkers, 5000);
+      setInterval(getcurrent, 5000);
 
       function updatemarkers() {
         $.ajax({
           url: 'rest/get/current',
           success: function(data) {
             console.log(data);
-            var markers = [];
+            markers = [];
             for (var i=0; i<data.length; i++) {
               var person = data[i];
               console.log(person.name);
               markers.push(L.marker([person.loc.y, person.loc.x]).bindPopup(person.name));
             }
             console.log(markers);
-            var erbody = L.layerGroup(markers).addTo(map);
+            erbodyg.clearLayers();
+            erbodyg.addLayer(markers);
           },
           dataType: 'json'
         });
       }
-      
+
     </script>
   </body>
 </html>
