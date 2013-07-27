@@ -30,8 +30,8 @@
       function onfirstLocationFound(e) {
         var radius = e.accuracy / 2;
 
-        mymarker.setLatLng(e.latlng).addTo(map)
-          .bindPopup(radius + " meter accuracy");
+//        mymarker.setLatLng(e.latlng).addTo(map)
+//          .bindPopup(radius + " meter accuracy");
 
         mycircle = L.circle(e.latlng, radius).addTo(map);
 
