@@ -22,7 +22,10 @@
       L.esri.basemapLayer("Streets").addTo(map);
 
       var erbodyg = L.layerGroup(),
-      mymarker = L.marker();
+        mycircle;
+//      mymarker = L.marker();
+
+    
 
       function onfirstLocationFound(e) {
         var radius = e.accuracy / 2;
@@ -30,7 +33,7 @@
         mymarker.setLatLng(e.latlng).addTo(map)
           .bindPopup(radius + " meter accuracy");
 
-        L.circle(e.latlng, radius).addTo(map);
+        mycircle = L.circle(e.latlng, radius).addTo(map);
 
         if (radius < 50) {
           $.get('rest/post',{
@@ -51,7 +54,9 @@
       function onLocationFound(e) {
         var radius = e.accuracy / 2;
 
-        mymarker.setLatLng(e.latlng);
+//        mymarker.setLatLng(e.latlng);
+
+          mycircle.setLatLng(e.latlng).setRadius(radius);
 
         if (radius < 50) {
           $.get('rest/post',{
