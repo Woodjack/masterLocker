@@ -17,23 +17,19 @@
     <script>
       var name = prompt("what's your name?", 'jack');
 
-      var markers;
-
       var map = L.map('map');
       // ArcGIS Online Basemaps - Streets, Topographic, Gray, Gray Labels, Ocean, NationalGeographic, Imagery, ImageryLabels
       L.esri.basemapLayer("Streets").addTo(map);
 
-      function onLocationFound(e) {
+      function onfirstLocationFound(e) {
         var radius = e.accuracy / 2;
-
-//        debugger;
 
         L.marker(e.latlng).addTo(map)
           .bindPopup(radius + " meter accuracy");
 
         L.circle(e.latlng, radius).addTo(map);
 
-        if (radius < 15) {
+        if (radius < 50) {
           $.get('rest/post',{
             name: name,
             cookie: '123',
@@ -52,34 +48,36 @@
         alert(e.message);
       }
 
-      map.on('locationfound', onLocationFound);
+      map.on('locationfound', onfirstLocationFound);
       map.on('locationerror', onLocationError);
 
       map.locate({setView: true, maxZoom: 17});
 
-      getcurrent = function() {
+      getfirstcurrent = function() {
+        map.locate({setView: true, maxZoom: 17});
+      }
+      
+      getfirstcurrent();
+//      setInterval(getcurrent, 15000);
+      updatemarkers();
+
+      function updatemarkers() {
         $.ajax({
           url: 'rest/get/current',
           success: function(data) {
             console.log(data);
+            var markers = [];
             for (var i=0; i<data.length; i++) {
               var person = data[i];
               console.log(person.name);
-              var platlng = L.latLng(person.loc.y, person.loc.x);
-              L.marker(platlng).addTo(map).bindPopup(person.name);
-/*              var myMarker = L.circleMarker(platlng, 
-                { title: person.name })
-                .addTo(map); */
-              }
-            },
+              markers.push(L.marker([person.loc.y, person.loc.x]).bindPopup(person.name));
+            }
+            console.log(markers);
+            var erbody = L.layerGroup(markers).addTo(map);
+          },
           dataType: 'json'
         });
-
-        map.locate({setView: true, maxZoom: 17});
       }
-      
-      getcurrent();
-      setInterval(getcurrent, 15000);
 
     </script>
   </body>
