@@ -15,16 +15,19 @@
   <body>
     <div id="map"></div>
     <script>
-      var name = prompt("what's your name?", 'jack');
+      var name = prompt("what's your name?");
 
       var map = L.map('map');
       // ArcGIS Online Basemaps - Streets, Topographic, Gray, Gray Labels, Ocean, NationalGeographic, Imagery, ImageryLabels
       L.esri.basemapLayer("Streets").addTo(map);
 
-      var erbodyg = L.layerGroup(),
+      var markers = [],
         mycircle;
 //      mymarker = L.marker();
 
+      for (var i=0; i<10; i++) {
+        markers[i] = L.marker();
+      }
     
 
       function onfirstLocationFound(e) {
@@ -91,28 +94,45 @@
       }
       
       getfirstcurrent();
-//      setInterval(getcurrent, 15000);
-      updatemarkers();
-      setInterval(updatemarkers, 5000);
-      setInterval(getcurrent, 5000);
+      updatefirstmarkers();
+//      setInterval(updatemarkers, 5000);
+//      setInterval(getcurrent, 5000);
 
       function updatemarkers() {
         $.ajax({
           url: 'rest/get/current',
           success: function(data) {
             console.log(data);
-            markers = [];
             for (var i=0; i<data.length; i++) {
               var person = data[i];
+              markers[i].setLatLng(L.LatLng(person.loc.y, person.loc.x));
               console.log(person.name);
-              markers.push(L.marker([person.loc.y, person.loc.x]).bindPopup(person.name));
+//              markers.push(L.marker([person.loc.y, person.loc.x]).bindPopup(person.name));
             }
-            console.log(markers);
-            erbodyg.clearLayers();
-            erbodyg.addLayer(markers);
+//            console.log(markers);
+//            erbodyg.clearLayers();
+//            erbodyg.addLayer(markers);
           },
           dataType: 'json'
         });
+      }
+
+      function updatefirstmarkers() {
+        $.ajax({
+          url: 'rest/get/current',
+          success: function(data) {
+            console.log(data);
+            for (var i=0; i<data.length; i++) {
+              var person = data[i];
+              console.log(person);
+              markers[i].setLatLng(L.LatLng(person.loc.y, person.loc.x));
+              markers[i].addTo(map);
+            }
+            
+
+          },
+          dataType: 'json'
+        })
       }
 
     </script>
