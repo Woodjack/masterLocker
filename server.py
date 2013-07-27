@@ -22,6 +22,7 @@ class Application(tornado.web.Application):
         handlers = [
             (r"/rest/post", postRequestHandler),
             (r"/rest/get", getRequestHandler),
+            (r"/rest/get/live", getLiveRequestHandler),
             (r"/rest/get/current", getCurrentRequestHandler),
             (r"/rest/get/tails", getCurrentRequestHandler),
             (r"/user", User),
@@ -40,6 +41,10 @@ class getRequestHandler(tornado.web.RequestHandler):
     def get(self):
         self.write( rest.getMONGO() )
 
+class getLiveRequestHandler(tornado.web.RequestHandler):
+    def get(self):
+        self.write( rest.getLiveMONGO() )
+
 class getCurrentRequestHandler(tornado.web.RequestHandler):
     def get(self):
         self.write( rest.getCurrentMONGO() )
@@ -51,13 +56,19 @@ class getTailsRequestHandler(tornado.web.RequestHandler):
 class postRequestHandler(tornado.web.RequestHandler):
     def get(self):
         data={}
+        cookieName = "wheresjack"
+        if not self.get_cookie( cookieName ):
+            cookieValue = rest.getNewCookieValue()
+            self.set_cookie( cookieName , str(333))
+            self.write("Cookie is now set")
+        else:
+            self.write("Cookie is " + cookieName)
+            data['cookie'] = self.get_cookie(cookieName)
         data['name'] = self.get_argument('name')
-        data['cookie'] = self.get_argument('cookie')
         data['loc'] = {}
         data['loc']['x'] = self.get_argument('x')
         data['loc']['y'] = self.get_argument('y')
         results = rest.postLocation(data)
-        self.write(data['name'])
         self.write(results)
 
 class User(tornado.web.RequestHandler):
