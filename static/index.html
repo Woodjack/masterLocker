@@ -25,9 +25,9 @@
         mycircle;
 //      mymarker = L.marker();
 
- //     for (var i=0; i<10; i++) {
- //       markers[i] = L.marker();
- //     }
+      for (var i=0; i<10; i++) {
+        markers[i] = L.marker();
+      }
     
 
       function onfirstLocationFound(e) {
@@ -85,7 +85,7 @@
 
       map.locate({setView: true, maxZoom: 17});
 
-      getfirstcurrent = function() {
+      function getfirstcurrent() {
         map.locate({setView: true, maxZoom: 17});
       }
 
@@ -105,7 +105,7 @@
             console.log(data);
             for (var i=0; i<data.length; i++) {
               var person = data[i];
-              markers[i] = L.marker([person.loc.y, person.loc.x]).addTo(map);
+              markers[i].setLatLng([person.loc.y, person.loc.x]).bindPopup(person.name).addTo(map);
 //              console.log(L.marker([person.loc.y, person.loc.x]).addTo(map));
               console.log(person.name);
 //              markers.push(L.marker([person.loc.y, person.loc.x]).bindPopup(person.name));
@@ -126,7 +126,7 @@
             console.log(data);
             for (var i=0; i<data.length; i++) {
               var person = data[i];
-              console.log(person);
+              console.log(person.name);
               markers[i].setLatLng([person.loc.y, person.loc.x]);
             }
             
