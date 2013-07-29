@@ -77,7 +77,7 @@
       }
 
       function onLocationError(e) {
-        alert(e.message);
+        console.log(e.message);
       }
 
       map.on('locationfound', onfirstLocationFound);
@@ -105,14 +105,9 @@
             console.log(data);
             for (var i=0; i<data.length; i++) {
               var person = data[i];
-              markers[i].setLatLng([person.loc.y, person.loc.x]).bindPopup(person.name).addTo(map);
-//              console.log(L.marker([person.loc.y, person.loc.x]).addTo(map));
-              console.log(person.name);
-//              markers.push(L.marker([person.loc.y, person.loc.x]).bindPopup(person.name));
+              if (name != person.name)
+                markers[i].setLatLng([person.loc.y, person.loc.x]).bindPopup(person.name).addTo(map);
             }
-//            console.log(markers);
-//            erbodyg.clearLayers();
-//            erbodyg.addLayer(markers);
           },
           dataType: 'json',
           cache: false
@@ -126,11 +121,9 @@
             console.log(data);
             for (var i=0; i<data.length; i++) {
               var person = data[i];
-              console.log(person.name);
-              markers[i].setLatLng([person.loc.y, person.loc.x]);
+              if (name != person.name)
+                markers[i].setLatLng([person.loc.y, person.loc.x]);
             }
-            
-
           },
           dataType: 'json',
           cache: false
