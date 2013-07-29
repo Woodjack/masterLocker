@@ -44,6 +44,7 @@ class getRequestHandler(tornado.web.RequestHandler):
 
 class getLiveRequestHandler(tornado.web.RequestHandler):
     def get(self):
+        self.set_header("Cache-control", "no-cache")
         self.write( rest.getLiveMONGO() )
 
 class getCurrentRequestHandler(tornado.web.RequestHandler):
@@ -59,8 +60,7 @@ class postRequestHandler(tornado.web.RequestHandler):
         data={}
         cookieName = "wheresjack"
         if not self.get_cookie( cookieName ):
-            cookieValue = rest.getNewCookieValue()
-            self.set_cookie( cookieName , str(333))
+            self.set_cookie( cookieName , cookies.bakeCookie() )
             self.write("Cookie is now set")
         else:
             self.write("Cookie is " + cookieName)
