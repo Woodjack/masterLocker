@@ -6,6 +6,7 @@ import tornado.web
 import pymongo
 import rest
 import datetime
+import cookies
 from bson.json_util import dumps  ##This is used to produce a properly formated json-array,
 
 import ast
@@ -75,10 +76,12 @@ class User(tornado.web.RequestHandler):
     def get(self):
         cookieName = "wheresjack"
         if not self.get_cookie( cookieName ):
-            self.set_cookie( cookieName , str(333))
+            self.set_cookie( cookieName , cookies.bakeCookie() )
             self.write("Cookie is now set")
         else:
-            self.write("Cookie is " + cookieName)
+            cookieValue = self.get_cookie(cookieName, default=None)
+            self.write("Cookie name is:   " + cookieName)
+            self.write("Cookie value is:  " + cookieValue)
 
 
 if __name__ == "__main__":

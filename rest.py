@@ -23,7 +23,7 @@ def getLiveMONGO():
 	data=[]
 	coll = db.events
 	query = coll.distinct('name')
-	queryDate = datetime.datetime.utcnow() - datetime.timedelta(minutes=5)
+	queryDate = datetime.datetime.utcnow() - datetime.timedelta(seconds = 30)
 	print(queryDate)
 	for person in query:
 		personinfo = coll.find({'name': person, 'date':{'$gt':queryDate}},{'_id': 0}).sort('date',1).limit(1)
@@ -67,8 +67,3 @@ def postLocation(newLocation):
 	newLocation['date'] = datetime.datetime.utcnow()
 	coll.insert(newLocation)
 	return("Successful mongodb upload bitches!!! ")
-
-
-def getNewCookieValue():
-	coll = db.users
-
