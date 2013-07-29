@@ -17,7 +17,7 @@
     <script>
       var name = prompt("what's your name?");
 
-      var map = L.map('map');
+      map = L.map('map');
       // ArcGIS Online Basemaps - Streets, Topographic, Gray, Gray Labels, Ocean, NationalGeographic, Imagery, ImageryLabels
       L.esri.basemapLayer("Streets").addTo(map);
 
@@ -25,9 +25,9 @@
         mycircle;
 //      mymarker = L.marker();
 
-      for (var i=0; i<10; i++) {
-        markers[i] = L.marker();
-      }
+ //     for (var i=0; i<10; i++) {
+ //       markers[i] = L.marker();
+ //     }
     
 
       function onfirstLocationFound(e) {
@@ -95,27 +95,8 @@
       
       getfirstcurrent();
       updatefirstmarkers();
-//      setInterval(updatemarkers, 5000);
-//      setInterval(getcurrent, 5000);
-
-      function updatemarkers() {
-        $.ajax({
-          url: 'rest/get/current',
-          success: function(data) {
-            console.log(data);
-            for (var i=0; i<data.length; i++) {
-              var person = data[i];
-              markers[i].setLatLng(L.LatLng(person.loc.y, person.loc.x));
-              console.log(person.name);
-//              markers.push(L.marker([person.loc.y, person.loc.x]).bindPopup(person.name));
-            }
-//            console.log(markers);
-//            erbodyg.clearLayers();
-//            erbodyg.addLayer(markers);
-          },
-          dataType: 'json'
-        });
-      }
+      setInterval(updatemarkers, 5000);
+      setInterval(getcurrent, 5000);
 
       function updatefirstmarkers() {
         $.ajax({
@@ -124,14 +105,35 @@
             console.log(data);
             for (var i=0; i<data.length; i++) {
               var person = data[i];
+              markers[i] = L.marker([person.loc.y, person.loc.x]).addTo(map);
+//              console.log(L.marker([person.loc.y, person.loc.x]).addTo(map));
+              console.log(person.name);
+//              markers.push(L.marker([person.loc.y, person.loc.x]).bindPopup(person.name));
+            }
+//            console.log(markers);
+//            erbodyg.clearLayers();
+//            erbodyg.addLayer(markers);
+          },
+          dataType: 'json',
+          cache: false
+        });
+      }
+
+      function updatemarkers() {
+        $.ajax({
+          url: 'rest/get/current',
+          success: function(data) {
+            console.log(data);
+            for (var i=0; i<data.length; i++) {
+              var person = data[i];
               console.log(person);
-              markers[i].setLatLng(L.LatLng(person.loc.y, person.loc.x));
-              markers[i].addTo(map);
+              markers[i].setLatLng([person.loc.y, person.loc.x]);
             }
             
 
           },
-          dataType: 'json'
+          dataType: 'json',
+          cache: false
         })
       }
 
