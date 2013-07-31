@@ -8,18 +8,63 @@
       #map-canvas { height: 100% }
     </style>
     <script type="text/javascript"
-      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD380nR6WXXvSUTwommcpaZAH1AVGzjHhE&sensor=true">
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD380nR6WXXvSUTwommcpaZAH1AVGzjHhE&sensor=true&v=3.13">
     </script>
+    <script type="text/javascript" src="../js/jquery-2.0.3.min.js"></script>
     <script type="text/javascript">
+      google.maps.visualRefresh = true;
+
+      var map
+        , points=[]
+        , markers=[]
+        , iterator=0;
+
       function initialize() {
         var mapOptions = {
-          center: new google.maps.LatLng(-34.397, 150.644),
-          zoom: 8,
+          center: new google.maps.LatLng(40.7, -101.7),
+          zoom: 4,
           mapTypeId: google.maps.MapTypeId.ROADMAP
         };
-        var map = new google.maps.Map(document.getElementById("map-canvas"),
+        map = new google.maps.Map(document.getElementById("map-canvas"),
             mapOptions);
+
+        getallpoints();
+
       }
+
+      function getallpoints() {
+        $.ajax({
+          url: 'rest/dumpallpoints',
+          dataType: 'json',
+          cache: false,
+          success: function(data) {
+            for (var i=0; i<data.length; i++) {
+              points.push(new google.maps.LatLng(parseFloat(data[i].loc.y), parseFloat(data[i].loc.x)));
+            }
+            drop();
+          }
+        });
+      }
+
+      function drop() {
+        for (var i = 0; i < points.length; i++) {
+          setTimeout(function() {
+            addMarker();
+          }, i * 25);
+        }
+      }
+
+      function addMarker() {
+        markers.push(new google.maps.Marker({
+          position: points[iterator],
+          map: map,
+          draggable: false,
+          animation: google.maps.Animation.DROP
+        }));
+
+        iterator++;
+      }
+
       google.maps.event.addDomListener(window, 'load', initialize);
     </script>
   </head>

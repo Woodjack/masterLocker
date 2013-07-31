@@ -9,6 +9,8 @@ import datetime
 import cookies
 from bson.json_util import dumps  ##This is used to produce a properly formated json-array,
 
+import pprint
+
 import ast
 port = int(os.environ.get('PORT', '8080'))
 
@@ -26,8 +28,9 @@ class Application(tornado.web.Application):
             (r"/rest/get/live", getLiveRequestHandler),
             (r"/rest/get/current", getCurrentRequestHandler),
             (r"/rest/get/tails", getCurrentRequestHandler),
+            (r"/admin/rest/dumpallpoints", dumpallpointsHandler),
             (r"/user", User),
-        	(r"/static/(.*)", tornado.web.StaticFileHandler, {"path": "static"}),
+        	(r"/(.+)", tornado.web.StaticFileHandler, {"path": "static"}),
         	(r"/", indexhtmlhandler)
         ]
         tornado.web.Application.__init__(self, handlers, debug=True)
@@ -36,7 +39,6 @@ class Application(tornado.web.Application):
 class indexhtmlhandler(tornado.web.RequestHandler):
 	def get(self):
 		self.render("static/index.html")
-
 
 class getRequestHandler(tornado.web.RequestHandler):
     def get(self):
@@ -71,6 +73,10 @@ class postRequestHandler(tornado.web.RequestHandler):
         data['loc']['y'] = self.get_argument('y')
         results = rest.postLocation(data)
         self.write(results)
+
+class dumpallpointsHandler(tornado.web.RequestHandler):
+    def get(self):
+        self.write( rest.dumpallpoints() )
 
 class User(tornado.web.RequestHandler):
     def get(self):

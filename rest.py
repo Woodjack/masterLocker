@@ -7,6 +7,8 @@ from bson.json_util import loads
 import ast
 from urlparse import urlparse, parse_qs  #url parsing for query
 
+import pprint
+
 
 def getMONGO():
 	coll = db.events
@@ -67,3 +69,14 @@ def postLocation(newLocation):
 	newLocation['date'] = datetime.datetime.utcnow()
 	coll.insert(newLocation)
 	return("Successful mongodb upload bitches!!! ")
+
+def dumpallpoints():
+	data=[]
+	coll = db.events
+	for point in db.events.find():
+		data.append( point )
+
+	if data:
+		return( dumps(data) )
+	else:
+		return( 'No Results' )
