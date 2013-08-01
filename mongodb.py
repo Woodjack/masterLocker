@@ -1,5 +1,6 @@
 import pymongo
 
+
 try:
 	connection = pymongo.Connection('localhost')
 except:

@@ -1,7 +1,7 @@
 import os
 import datetime
 import pymongo
-from mongodbconf import db
+from mongodb import db
 from bson.json_util import dumps
 from bson.json_util import loads
 import ast
