@@ -1,1 +1,0 @@
-{ "options" : { "create" : "app16815592.locations", "size" : "", "max" : "", "capped" : false }, "indexes" : [ { "v" : 1, "key" : { "_id" : 1 }, "ns" : "app16815592.locations", "name" : "_id_" } ] }
