@@ -28,9 +28,7 @@ class Application(tornado.web.Application):
             (r"/rest/get/live", getLiveRequestHandler),
             (r"/rest/get/current", getCurrentRequestHandler),
             (r"/rest/get/tails", getCurrentRequestHandler),
-            (r"/cookie", cookieRequestHandler),
             (r"/admin/rest/dumpallpoints", dumpallpointsHandler),
-            (r"/user", User),
         	(r"/(.+)", tornado.web.StaticFileHandler, {"path": "static"}),
         	(r"/", indexhtmlhandler)
         ]
@@ -39,13 +37,6 @@ class Application(tornado.web.Application):
 
 class indexhtmlhandler(tornado.web.RequestHandler):
 	def get(self):
-        cookieName = "wheresjack"
-        if not self.get_cookie( cookieName ):
-            self.set_cookie( cookieName , bakeCookie() )
-        else:
-            self.write("Cookie is " + cookieName)
-            data['cookie'] = self.get_cookie(cookieName)
-
 		self.render("static/index.html")
 
 class getRequestHandler(tornado.web.RequestHandler):
@@ -54,7 +45,6 @@ class getRequestHandler(tornado.web.RequestHandler):
 
 class getLiveRequestHandler(tornado.web.RequestHandler):
     def get(self):
-        self.set_header("Cache-control", "no-cache")
         self.write( rest.getLiveMONGO() )
 
 class getCurrentRequestHandler(tornado.web.RequestHandler):
@@ -68,13 +58,7 @@ class getTailsRequestHandler(tornado.web.RequestHandler):
 class postRequestHandler(tornado.web.RequestHandler):
     def get(self):
         data={}
-        cookieName = "wheresjack"
-        if not self.get_cookie( cookieName ):
-            self.set_cookie( cookieName , cookies.bakeCookie() )
-            self.write("Cookie is now set")
-        else:
-            self.write("Cookie is " + cookieName)
-            data['cookie'] = self.get_cookie(cookieName)
+        data['cookie'] = self.get_argument()
         data['name'] = self.get_argument('name')
         data['loc'] = {}
         data['loc']['x'] = self.get_argument('x')
@@ -85,17 +69,6 @@ class postRequestHandler(tornado.web.RequestHandler):
 class dumpallpointsHandler(tornado.web.RequestHandler):
     def get(self):
         self.write( rest.dumpallpoints() )
-
-class User(tornado.web.RequestHandler):
-    def get(self):
-        cookieName = "wheresjack"
-        if not self.get_cookie( cookieName ):
-            self.set_cookie( cookieName , cookies.bakeCookie() )
-            self.write("Cookie is now set")
-        else:
-            cookieValue = self.get_cookie(cookieName, default=None)
-            self.write("Cookie name is:   " + cookieName)
-            self.write("Cookie value is:  " + cookieValue)
 
 
 if __name__ == "__main__":
