@@ -36,7 +36,7 @@ def getLiveMONGO():
 		try:
 			data.append( ast.literal_eval(getResults)[0] )
 		except IndexError:
-			print('index error!!!')
+			#print('index error!!!')
 	if data:
 	    return( dumps(data) )
 	else:
