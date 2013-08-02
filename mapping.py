@@ -18,9 +18,12 @@ def makeLineFromPoints(pointsJSON):
 
 
 def testing():
-	mongoResults = coll.find({'name':'Justin'},{'_id':0})[:5] #do a query for justin, only give back 5 results
+	coll = db.events
+	mongoResults = coll.find( {'name':'Justin'},{'_id':0} ) #do a query for justin, only give back 5 results
 	if mongoResults:
 	    results = dumps(mongoResults) #put into a string
 	    print( makeLineFromPoints(results) ) #make it into a line
 	else:
 	    print('No Results')
+
+testing()
