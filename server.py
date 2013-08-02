@@ -14,8 +14,6 @@ import pprint
 import ast
 port = int(os.environ.get('PORT', '8080'))
 
-
-
 from tornado.options import define, options
 define("port", default=port, help="run on the given port", type=int) #port options for webServer
 
@@ -29,6 +27,7 @@ class Application(tornado.web.Application):
             (r"/rest/get/current", getCurrentRequestHandler),
             (r"/rest/get/tails", getCurrentRequestHandler),
             (r"/admin/rest/dumpallpoints", dumpallpointsHandler),
+            (r"/cookie", cookieRequestHandler),
         	(r"/(.+)", tornado.web.StaticFileHandler, {"path": "static"}),
         	(r"/", indexhtmlhandler)
         ]
@@ -58,13 +57,32 @@ class getTailsRequestHandler(tornado.web.RequestHandler):
 class postRequestHandler(tornado.web.RequestHandler):
     def get(self):
         data={}
-        data['cookie'] = self.get_argument()
-        data['name'] = self.get_argument('name')
-        data['loc'] = {}
-        data['loc']['x'] = self.get_argument('x')
-        data['loc']['y'] = self.get_argument('y')
+        if self.get_argument('cookie'):
+            data['cookie'] = self.get_argument('cookie')
+        if self.get_argument('name'):
+            data['name'] = self.get_argument('name')
+        if self.get_argument('x') and self.get_argument('y'):
+            data['loc'] = {}
+            data['loc']['x'] = self.get_argument('x')
+            data['loc']['y'] = self.get_argument('y')
         results = rest.postLocation(data)
         self.write(results)
+
+class cookieRequestHandler(tornado.web.RequestHandler):
+    def get(self):
+        cookieName = str('wheresjack')
+        cookieValue = cookies.bakeCookie()
+        data = {}
+        data['cookie'] = cookieValue
+        newUser['date'] = datetime.datetime.utcnow()
+        if self.get_argument('name'):
+            data['name'] = self.get_argument('name')
+        if self.get_argument('x') and self.get_argument('y'):
+            data['loc'] = {}
+            data['loc']['x'] = self.get_argument('x')
+            data['loc']['y'] = self.get_argument('y')
+        results = rest.postNewUser(data)
+
 
 class dumpallpointsHandler(tornado.web.RequestHandler):
     def get(self):
