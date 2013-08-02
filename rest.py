@@ -28,15 +28,15 @@ def getLiveMONGO():
 	data=[]
 	coll = db.events
 	query = coll.distinct('name')
-	queryDate = datetime.datetime.utcnow() - datetime.timedelta(seconds = 30)
+	queryDate = datetime.datetime.utcnow() - datetime.timedelta(seconds = 60)
 	print(queryDate)
 	for person in query:
 		personinfo = coll.find({'name': person, 'date':{'$gt':queryDate}},{'_id': 0}).sort('date',1).limit(1)
 		getResults = dumps(personinfo)
 		try:
-			data.append( ast.literal_eval(getResults).pop() )
+			data.append( ast.literal_eval(getResults)[0] )
 		except IndexError:
-			print('index error')
+			print('index error!!!')
 	if data:
 	    return( dumps(data) )
 	else:
