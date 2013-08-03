@@ -9,8 +9,6 @@ import datetime
 from cookies import bakeCookie
 from bson.json_util import dumps  ##This is used to produce a properly formated json-array,
 
-import pprint
-
 import ast
 port = int(os.environ.get('PORT', '8080'))
 

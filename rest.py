@@ -5,9 +5,7 @@ from mongodb import db
 from bson.json_util import dumps
 from bson.json_util import loads
 import ast
-from urlparse import urlparse, parse_qs  #url parsing for query
 
-import pprint
 
 
 def getMONGO():
@@ -32,11 +30,12 @@ def getLiveMONGO():
 	for person in query:
 		personinfo = coll.find({'name': person, 'date':{'$gt':queryDate}},{'_id': 0}).sort('date',1).limit(1)
 		getResults = dumps(personinfo)
-		print(getResults)
 		try:
-			data.append( ast.literal_eval(getResults[0]) )
+			data.append( ast.literal_eval(getResults) )
 		except IndexError:
-			s=1#print('index error!!!')
+			s=1
+			('date',1)
+			print('index error!!!')
 	if data:
 	    return( dumps(data) )
 	else:
@@ -69,7 +68,6 @@ def getTailsMONGO():
 
 def postLocation(newLocation):
 	coll = db.events
-	newLocation['date'] = datetime.datetime.utcnow()
 	coll.insert(newLocation)
 	return("Successful mongodb upload bitches!!! ")
 
