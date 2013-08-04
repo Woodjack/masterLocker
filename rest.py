@@ -34,8 +34,8 @@ def getLiveMONGO():
 			except IndexError:
 				print('index error!!!')
 		else:
-			print('no getResults :(')
-	if data:
+			continue
+	if data != []:
 	    return( dumps(data) )
 	else:
 	    return("     No results" )
