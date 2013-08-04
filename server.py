@@ -23,7 +23,6 @@ class Application(tornado.web.Application):
             (r"/rest/get", getRequestHandler),
             (r"/rest/get/live", getLiveRequestHandler),
             (r"/rest/get/current", getCurrentRequestHandler),
-            (r"/rest/get/tails", getCurrentRequestHandler),
             (r"/admin/rest/dumpallpoints", dumpallpointsHandler),
             (r"/cookie", cookieRequestHandler),
         	(r"/(.+)", tornado.web.StaticFileHandler, {"path": "static"}),
@@ -47,10 +46,6 @@ class getLiveRequestHandler(tornado.web.RequestHandler):
 class getCurrentRequestHandler(tornado.web.RequestHandler):
     def get(self):
         self.write( rest.getCurrentMONGO() )
-
-class getTailsRequestHandler(tornado.web.RequestHandler):
-    def get(self):
-        self.write( rest.getTailsMONGO() )
 
 class postRequestHandler(tornado.web.RequestHandler):
     def get(self):

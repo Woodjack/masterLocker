@@ -17,6 +17,7 @@ def getMONGO():
 	else:
 	    return('No Results')
 
+
 def postNewUser(data):
 	coll = db.users
 	coll.insert(data)
@@ -34,7 +35,6 @@ def getLiveMONGO():
 			data.append( ast.literal_eval(getResults) )
 		except IndexError:
 			s=1
-			('date',1)
 			print('index error!!!')
 	if data:
 	    return( dumps(data) )
