@@ -65,13 +65,18 @@ class postRequestHandler(tornado.web.RequestHandler):
 class cookieRequestHandler(tornado.web.RequestHandler):
     def get(self):
         cookieName = str('gofindjack')
-        cookieValue = cookies.bakeCookie()
-        data = {}
-        data['cookie'] = cookieValue
-        data['date'] = datetime.datetime.utcnow()
-        data['name'] = self.get_argument('name')
-        rest.postNewUser(data)
-        self.write(str(cookieValue))
+        if not self.get_cookie( cookieName ):
+            cookieValue = cookies.bakeCookie()
+            data = {}
+            data['cookie'] = cookieValue
+            data['date'] = datetime.datetime.utcnow()
+            data['name'] = self.get_argument('name')
+            self.write(str(cookieValue))
+            self.set_cookie( cookieName , str(cookieValue) )
+            rest.postNewUser(data)
+        else:
+            cookieValue = self.get_cookie(cookieName, default=None)
+            self.write(cookieValue)
 
 class dumpallpointsHandler(tornado.web.RequestHandler):
     def get(self):
