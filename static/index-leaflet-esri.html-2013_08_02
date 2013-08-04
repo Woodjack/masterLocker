@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>where's jack?????</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" href="vendor/leaflet/leaflet.css" />
+    <link rel="stylesheet" href="dist/esri-leaflet.min.css" />
+    <link rel="stylesheet" href="demo.css" />
+    <!--[if lte IE 8]><link rel="stylesheet" href="leaflet.ie.css" /><![endif]-->
+    <script src="vendor/leaflet/leaflet-src.js"></script>
+    <script src="dist/esri-leaflet.min.js"></script>
+    <script src="vendor/geoservices/geoservices.js"></script>
+    <script src="js/jquery-2.0.3.min.js"></script>
+  </head>
+  <body>
+    <div id="map"></div>
+    <script>
+      var name = prompt("what's your name?");
+
+      map = L.map('map');
+      // ArcGIS Online Basemaps - Streets, Topographic, Gray, Gray Labels, Ocean, NationalGeographic, Imagery, ImageryLabels
+      L.esri.basemapLayer("Streets").addTo(map);
+
+      var markers = [],
+        mycircle;
+//      mymarker = L.marker();
+
+      for (var i=0; i<10; i++) {
+        markers[i] = L.marker();
+      }
+    
+
+      function onfirstLocationFound(e) {
+        var radius = e.accuracy / 2;
+
+//        mymarker.setLatLng(e.latlng).addTo(map)
+//          .bindPopup(radius + " meter accuracy");
+
+        mycircle = L.circle(e.latlng, radius).addTo(map);
+
+        if (radius < 50) {
+          $.get('rest/post',{
+            name: name,
+            cookie: '123',
+            x: e.latlng.lng,
+            y: e.latlng.lat
+          });
+
+          console.log('updated location');
+        } else {
+          console.log('location not accurate');
+        }
+        map.off('locationfound', onfirstLocationFound);
+        map.on('locationfound', onLocationFound);
+      }
+
+      function onLocationFound(e) {
+        var radius = e.accuracy / 2;
+
+//        mymarker.setLatLng(e.latlng);
+
+          mycircle.setLatLng(e.latlng).setRadius(radius);
+
+        if (radius < 50) {
+          $.get('rest/post',{
+            name: name,
+            cookie: '123',
+            x: e.latlng.lng,
+            y: e.latlng.lat
+          });
+
+          console.log('updated location');
+        } else {
+          console.log('location not accurate');
+        }
+
+      }
+
+      function onLocationError(e) {
+        console.log(e.message);
+      }
+
+      map.on('locationfound', onfirstLocationFound);
+      map.on('locationerror', onLocationError);
+
+      map.locate({setView: true, maxZoom: 17});
+
+      function getfirstcurrent() {
+        map.locate({setView: true, maxZoom: 17});
+      }
+
+      function getcurrent() {
+        map.locate({setView: false});
+      }
+      
+      getfirstcurrent();
+      updatefirstmarkers();
+      setInterval(updatemarkers, 5000);
+      setInterval(getcurrent, 5000);
+
+      function updatefirstmarkers() {
+        $.ajax({
+          url: 'rest/get/live',
+          success: function(data) {
+            console.log(data);
+            for (var i=0; i<data.length; i++) {
+              var person = data[i];
+              if (name != person.name)
+                markers[i].setLatLng([person.loc.y, person.loc.x]).bindPopup(person.name).addTo(map);
+            }
+          },
+          dataType: 'json',
+          cache: false
+        });
+      }
+
+      function updatemarkers() {
+        $.ajax({
+          url: 'rest/get/live',
+          success: function(data) {
+            console.log(data);
+            for (var i=0; i<data.length; i++) {
+              var person = data[i];
+              if (name != person.name)
+                markers[i].setLatLng([person.loc.y, person.loc.x]);
+            }
+          },
+          dataType: 'json',
+          cache: false
+        })
+      }
+
+    </script>
+  </body>
+</html>
