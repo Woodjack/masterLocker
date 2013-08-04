@@ -49,8 +49,8 @@
           });
         }
         getlivepoints();
-        setInterval(updatemylocation, 5000);
-        setInterval(getlivepoints, 5000);
+        setInterval(updatemylocation, 10000);
+        setInterval(getlivepoints, 10000);
       }
 
       function getlivepoints() {
@@ -59,7 +59,6 @@
           success: function(data) {
             console.log(data);
             for (var i=0; i<data.length; i++) {
-              console.log(i + 'in first for loop');
               var person = data[i]
               , point = markers[i];
               if (point) {
@@ -73,9 +72,7 @@
                   title: person.name
                 });
             }
-            console.log(i + 'inbetween for loops');
             for (i; i<markers.length; i++) {
-              console.log(i.toString() + 'set null');
               markers[i].setMap(null);
             }
           },
