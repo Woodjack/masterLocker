@@ -6,6 +6,7 @@ import tornado.web
 import pymongo
 import rest
 import datetime
+import cookies
 from cookies import bakeCookie
 from bson.json_util import dumps  ##This is used to produce a properly formated json-array,
 
@@ -68,7 +69,7 @@ class cookieRequestHandler(tornado.web.RequestHandler):
         cookieValue = cookies.bakeCookie()
         data = {}
         data['cookie'] = cookieValue
-        newUser['date'] = datetime.datetime.utcnow()
+        data['date'] = datetime.datetime.utcnow()
         if self.get_argument('name'):
             data['name'] = self.get_argument('name')
         if self.get_argument('x') and self.get_argument('y'):
@@ -76,6 +77,7 @@ class cookieRequestHandler(tornado.web.RequestHandler):
             data['loc']['x'] = float(self.get_argument('x'))
             data['loc']['y'] = float(self.get_argument('y'))
         results = rest.postNewUser(data)
+        self.write("your cookie is:   " + str(cookieValue))
 
 
 class dumpallpointsHandler(tornado.web.RequestHandler):
