@@ -43,30 +43,18 @@ def getLive():
 def getLiveWithoutMe(currentUserCookie):
 	data=[]
 	coll = db.events
-	query = coll.distinct('cookie')
 	date = datetime.datetime.utcnow() - datetime.timedelta(seconds = 180)
-	print(query)
-	print(currentUserCookie)
-	try:
-		i = query.index(currentUserCookie)
-		query.remove(i)
-	except ValueError:
-		print('Value error in getLiveWithoutMe, meeeh!')
-		i = -1 # no match
-	for cookie in query:
-		personinfo = coll.find({'cookie': cookie, "date": { "$gte": date } },{'_id': 0,'date':0,'cookie':0}).sort('date',1).limit(1)
-		getResults = dumps(personinfo)
-		if getResults != "[]":
-			try:
-				data.append( ast.literal_eval(getResults)[0] )
-			except IndexError:
-				print('index error!!!')
-		else:
-			continue
+	personinfo = coll.find({"date": { "$gte": date } },{'_id': 0,'date':0,'cookie':0})
+	uniqueCookies = personinfo.distinct('cookie')
+	for cookie in uniqueCookies:
+		results = dumps(personinfo)
 	if data != []:
 	    return( dumps(data) )
 	else:
 	    return("     No results" )
+
+
+
 def getCurrentMONGO():
 	data=[]
 	coll = db.events	

@@ -20,7 +20,6 @@ class Application(tornado.web.Application):
     def __init__(self):
         handlers = [
             (r"/rest/post", postRequestHandler),
-            (r"/rest/get", getRequestHandler),
             (r"/rest/get/live", getLiveRequestHandler),
             (r"/rest/get/current", getCurrentRequestHandler),
             (r"/admin/rest/dumpallpoints", dumpallpointsHandler),
@@ -34,13 +33,9 @@ class indexhtmlhandler(tornado.web.RequestHandler):
 	def get(self):
 		self.render("static/index.html")
 
-class getRequestHandler(tornado.web.RequestHandler):
-    def get(self):
-        self.write( rest.getMONGO() )
-
 class getLiveRequestHandler(tornado.web.RequestHandler):
     def get(self):
-        self.write( rest.getLiveWithoutMe(self.get_cookie('id')) )
+        self.write( rest.getLive() )
 
 class getCurrentRequestHandler(tornado.web.RequestHandler):
     def get(self):
