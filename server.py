@@ -56,8 +56,8 @@ class postRequestHandler(tornado.web.RequestHandler):
             data['name'] = self.get_argument('name')
         if self.get_argument('x') and self.get_argument('y'):
             data['loc'] = {}
-            data['loc']['x'] = self.get_argument('x')
-            data['loc']['y'] = self.get_argument('y')
+            data['loc']['x'] = float(self.get_argument('x'))
+            data['loc']['y'] = float(self.get_argument('y'))
         results = rest.postLocation(data)
         self.write(results)
 
@@ -72,8 +72,8 @@ class cookieRequestHandler(tornado.web.RequestHandler):
             data['name'] = self.get_argument('name')
         if self.get_argument('x') and self.get_argument('y'):
             data['loc'] = {}
-            data['loc']['x'] = self.get_argument('x')
-            data['loc']['y'] = self.get_argument('y')
+            data['loc']['x'] = float(self.get_argument('x'))
+            data['loc']['y'] = float(self.get_argument('y'))
         results = rest.postNewUser(data)
 
 
