@@ -19,7 +19,7 @@ def postNewUser(data):
 	coll = db.users
 	coll.insert(data)
 
-def getLive():
+def getLive(cookie):
 	data=[]
 	coll = db.events
 	query = coll.distinct('cookie')

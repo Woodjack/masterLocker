@@ -35,7 +35,10 @@ class indexhtmlhandler(tornado.web.RequestHandler):
 
 class getLiveRequestHandler(tornado.web.RequestHandler):
     def get(self):
-        self.write( rest.getLive() )
+        if self.get_cookie('id'):
+            self.write( rest.getLive(self.get_cookie('id')) )
+        else:
+            print('getLive  did not find a cookie')
 
 class getCurrentRequestHandler(tornado.web.RequestHandler):
     def get(self):
@@ -43,7 +46,7 @@ class getCurrentRequestHandler(tornado.web.RequestHandler):
 
 class postRequestHandler(tornado.web.RequestHandler):
     def get(self):
-        if not self.get_cookie( 'name' ):
+        if self.get_cookie( 'name' ):
             data={}
             data['date'] = datetime.datetime.utcnow()
             data['cookie'] = self.get_cookie('id')
