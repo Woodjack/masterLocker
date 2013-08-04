@@ -48,18 +48,19 @@
 
       function drop() {
         for (var i = 0; i < points.length; i++) {
-          setTimeout(function() {
-            addMarker();
-          }, i * 25);
+          addMarker();
+//          setTimeout(function() {
+//            addMarker();
+//          }, i * 25);
         }
       }
 
       function addMarker() {
         markers.push(new google.maps.Marker({
           position: points[iterator],
-          map: map,
-          draggable: false,
-          animation: google.maps.Animation.DROP
+          map: map
+//          draggable: false,
+//          animation: google.maps.Animation.DROP
         }));
 
         iterator++;
