@@ -60,15 +60,15 @@ class postRequestHandler(tornado.web.RequestHandler):
 
 class cookieRequestHandler(tornado.web.RequestHandler):
     def get(self):
-        if not self.get_cookie( 'gofindjack_id' ):
+        if not self.get_cookie( 'id' ):
             id_cookieValue = cookies.bakeCookie()
             data = {}
             data['cookie'] = id_cookieValue
             data['date'] = datetime.datetime.utcnow()
             data['name'] = self.get_argument('name')
             self.write('cookie baked!!')
-            self.set_cookie( 'gofindjack_id' , str(id_cookieValue) ,expires_days=14 )
-            self.set_cookie( 'gofindjack_name' , str(data['name']) ,expires_days=14 )
+            self.set_cookie( 'id' , str(id_cookieValue) ,expires_days=14 )
+            self.set_cookie( 'name' , str(data['name']) ,expires_days=14 )
             rest.postNewUser(data)
         else:
             self.write('cookie already there')
