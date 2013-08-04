@@ -6,8 +6,6 @@ from bson.json_util import dumps
 from bson.json_util import loads
 import ast
 
-
-
 def getMONGO():
 	coll = db.events
 	mongoResults = coll.find({},{'_id':0})
@@ -16,7 +14,6 @@ def getMONGO():
 	    return(results)
 	else:
 	    return('No Results')
-
 
 def postNewUser(data):
 	coll = db.users
@@ -27,21 +24,18 @@ def getLiveMONGO():
 	data=[]
 	coll = db.events
 	query = coll.distinct('name')
-	queryDate = datetime.datetime.utcnow() - datetime.timedelta(seconds = 60)
+	#queryDate = datetime.datetime.utcnow() - datetime.timedelta(seconds = 60)
 	for person in query:
-		personinfo = coll.find({'name': person, 'date':{'$gt':queryDate}},{'_id': 0}).sort('date',1).limit(1)
+		personinfo = coll.find({'name': person},{'_id': 0}).sort('date',1).limit(1)
 		getResults = dumps(personinfo)
 		try:
-			data.append( ast.literal_eval(getResults) )
+			data.append( ast.literal_eval(getResults)[0] )
 		except IndexError:
-			s=1
 			print('index error!!!')
 	if data:
 	    return( dumps(data) )
 	else:
 	    return( str(queryDate) + "     No results" )
-
-
 
 def getCurrentMONGO():
 	data=[]
@@ -55,16 +49,6 @@ def getCurrentMONGO():
 	    return( dumps(data) )
 	else:
 	    return( 'No Results' )
-
-
-def getTailsMONGO():
-	coll = db.events
-	mongoResults = coll.find({},{'_id':0})
-	if mongoResults:
-	    results = dumps(mongoResults)
-	    return(results)
-	else:
-	    return('No Results')
 
 def postLocation(newLocation):
 	coll = db.events
