@@ -40,7 +40,7 @@ class getRequestHandler(tornado.web.RequestHandler):
 
 class getLiveRequestHandler(tornado.web.RequestHandler):
     def get(self):
-        self.write( rest.getLiveMONGO() )
+        self.write( rest.getLiveWithoutMe(self.get_cookie('id')) )
 
 class getCurrentRequestHandler(tornado.web.RequestHandler):
     def get(self):
@@ -48,15 +48,18 @@ class getCurrentRequestHandler(tornado.web.RequestHandler):
 
 class postRequestHandler(tornado.web.RequestHandler):
     def get(self):
-        data={}
-        data['date'] = datetime.datetime.utcnow()
-        data['cookie'] = self.get_argument('cookie')
-        data['name'] = self.get_argument('name')
-        data['loc'] = {}
-        data['loc']['x'] = float(self.get_argument('x'))
-        data['loc']['y'] = float(self.get_argument('y'))
-        results = rest.postLocation(data)
-        self.write(results)
+        if not set_cookie( 'name' ):
+            data={}
+            data['date'] = datetime.datetime.utcnow()
+            data['cookie'] = self.get_cookie('id')
+            data['name'] = self.get_cookie('name')
+            data['loc'] = {}
+            data['loc']['x'] = float(self.get_argument('x'))
+            data['loc']['y'] = float(self.get_argument('y'))
+            rest.postLocation(data)
+            self.write('postRequest worked!!')
+        else:
+            self.write('postRequest failed amigo, try again')
 
 class cookieRequestHandler(tornado.web.RequestHandler):
     def get(self):

@@ -19,13 +19,13 @@ def postNewUser(data):
 	coll = db.users
 	coll.insert(data)
 
-def getLiveMONGO():
+def getLive():
 	data=[]
 	coll = db.events
-	query = coll.distinct('name')
+	query = coll.distinct('cookie')
 	date = datetime.datetime.utcnow() - datetime.timedelta(seconds = 180)
 	for person in query:
-		personinfo = coll.find({'name': person, "date": { "$gte": date } },{'_id': 0}).sort('date',1).limit(1)
+		personinfo = coll.find({'cookie': cookie, "date": { "$gte": date } },{'_id': 0,'date':0,'cookie':0}).sort('date',1).limit(1)
 		getResults = dumps(personinfo)
 		if getResults != "[]":
 			try:
@@ -39,6 +39,32 @@ def getLiveMONGO():
 	else:
 	    return("     No results" )
 
+
+def getLiveWithoutMe(currentUserCookie):
+	data=[]
+	coll = db.events
+	query = coll.distinct('cookie')
+	date = datetime.datetime.utcnow() - datetime.timedelta(seconds = 180)
+	try:
+        i = query.index(currentUserCookie)
+        query.remove(i)
+    except ValueError:
+        print('Value error in getLiveWithoutMe, meeeh!')
+        i = -1 # no match
+	for cookie in query:
+		personinfo = coll.find({'cookie': cookie, "date": { "$gte": date } },{'_id': 0,'date':0,'cookie':0}).sort('date',1).limit(1)
+		getResults = dumps(personinfo)
+		if getResults != "[]":
+			try:
+				data.append( ast.literal_eval(getResults)[0] )
+			except IndexError:
+				print('index error!!!')
+		else:
+			continue
+	if data != []:
+	    return( dumps(data) )
+	else:
+	    return("     No results" )
 def getCurrentMONGO():
 	data=[]
 	coll = db.events	
@@ -55,14 +81,12 @@ def getCurrentMONGO():
 def postLocation(newLocation):
 	coll = db.events
 	coll.insert(newLocation)
-	return("Successful mongodb upload bitches!!!   ")
 
 def dumpallpoints():
 	data=[]
 	coll = db.events
 	for point in db.events.find():
 		data.append( point )
-
 	if data:
 		return( dumps(data) )
 	else:
