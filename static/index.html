@@ -63,15 +63,18 @@
           success: function(data) {
             console.log(data);
             for (var i=0; i<data.length; i++) {
-              var person = data[i];
-              if (markers[i]) {
-               markers[i].setPosition(new google.maps.LatLng(parseFloat(person.loc.y), parseFloat(person.loc.x)));
-               markers[i].setMap(map);
+              var person = data[i]
+              , point = markers[i];
+              if (point) {
+                point.setPosition(new google.maps.LatLng(parseFloat(person.loc.y), parseFloat(person.loc.x)));
+                if (point.getMap() == null)
+                  point.setMap(map);
               } else
-                markers[i] = new google.maps.Marker({
+                point = new google.maps.Marker({
                   position: new google.maps.LatLng(parseFloat(person.loc.y), parseFloat(person.loc.x)),
                   map: map,
-                  animation: google.maps.Animation.DROP
+                  animation: google.maps.Animation.DROP,
+                  title: person.name
                 });
             }
             for (i; i<markers.length; i++)
