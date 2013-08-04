@@ -48,7 +48,7 @@ class getCurrentRequestHandler(tornado.web.RequestHandler):
 
 class postRequestHandler(tornado.web.RequestHandler):
     def get(self):
-        if not set_cookie( 'name' ):
+        if not self.get_cookie( 'name' ):
             data={}
             data['date'] = datetime.datetime.utcnow()
             data['cookie'] = self.get_cookie('id')

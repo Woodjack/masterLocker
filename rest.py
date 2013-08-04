@@ -45,12 +45,14 @@ def getLiveWithoutMe(currentUserCookie):
 	coll = db.events
 	query = coll.distinct('cookie')
 	date = datetime.datetime.utcnow() - datetime.timedelta(seconds = 180)
+	print(query)
+	print(currentUserCookie)
 	try:
-        i = query.index(currentUserCookie)
-        query.remove(i)
-    except ValueError:
-        print('Value error in getLiveWithoutMe, meeeh!')
-        i = -1 # no match
+		i = query.index(currentUserCookie)
+		query.remove(i)
+	except ValueError:
+		print('Value error in getLiveWithoutMe, meeeh!')
+		i = -1 # no match
 	for cookie in query:
 		personinfo = coll.find({'cookie': cookie, "date": { "$gte": date } },{'_id': 0,'date':0,'cookie':0}).sort('date',1).limit(1)
 		getResults = dumps(personinfo)
