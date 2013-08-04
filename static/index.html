@@ -18,7 +18,8 @@
 
       var map
         , markers=[]
-        , mycircle;
+        , mycircle
+        , centered = false;
 
       function initialize() {
         var mapOptions = {
@@ -29,31 +30,26 @@
         map = new google.maps.Map(document.getElementById("map-canvas"),
             mapOptions);
 
+        mycircle = new google.maps.Circle({
+          radius: 17,
+          map: map
+        });
+
         if (navigator.geolocation) {
           navigator.geolocation.getCurrentPosition(function(position) {
-            console.log(position);
             var pos = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-            mycircle = new google.maps.Circle({
-              radius: 17,
-              center: pos,
-              map: map
-            });
+
+            mycircle.setCenter(pos);
             map.setCenter(pos);
             map.setZoom(19);
 
-            $.get('rest/post', {
-              name: name,
-              cookie: '123',
-              x: position.coords.longitude,
-              y: position.coords.latitude
-            });
+            centered = true;
 
-            console.log('set my location!!!');
-
-            setInterval(updatemylocation, 5000);
+            console.log('centered');
           });
         }
         getlivepoints();
+        setInterval(updatemylocation, 5000);
         setInterval(getlivepoints, 5000);
       }
 
@@ -63,22 +59,25 @@
           success: function(data) {
             console.log(data);
             for (var i=0; i<data.length; i++) {
+              console.log(i + 'in first for loop');
               var person = data[i]
               , point = markers[i];
               if (point) {
-                point.setPosition(new google.maps.LatLng(parseFloat(person.loc.y), parseFloat(person.loc.x)));
-                if (point.getMap() == null)
-                  point.setMap(map);
+                point.setPosition(new google.maps.LatLng(person.loc.y, person.loc.x));
+                point.setMap(map);
               } else
-                point = new google.maps.Marker({
-                  position: new google.maps.LatLng(parseFloat(person.loc.y), parseFloat(person.loc.x)),
+                markers[i] = new google.maps.Marker({
+                  position: new google.maps.LatLng(person.loc.y, person.loc.x),
                   map: map,
-                  animation: google.maps.Animation.DROP,
+//                  animation: google.maps.Animation.DROP,
                   title: person.name
                 });
             }
-            for (i; i<markers.length; i++)
+            console.log(i + 'inbetween for loops');
+            for (i; i<markers.length; i++) {
+              console.log(i.toString() + 'set null');
               markers[i].setMap(null);
+            }
           },
           dataType: 'json',
           cache: false
@@ -86,11 +85,28 @@
       }
 
       function updatemylocation() {
-        navigator.geolocation.getCurrentPosition(function(position) {
-          var pos = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-          mycircle.setCenter(pos);
-          console.log('updated location!!');
-        });
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(function(position) {
+            var pos = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+            mycircle.setCenter(pos);
+
+            $.get('rest/post', {
+              name: name,
+              cookie: '123',
+              x: position.coords.longitude,
+              y: position.coords.latitude
+            });
+
+            console.log('sent location');
+
+            if (!centered) {
+              map.setCenter(pos);
+              map.setZoom(19);
+              centered = true;
+              console.log('centered finally');
+            }
+          });
+        }
       }
 
       google.maps.event.addDomListener(window, 'load', initialize);
