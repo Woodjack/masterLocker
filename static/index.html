@@ -39,7 +39,7 @@
               map: map
             });
             map.setCenter(pos);
-            map.setZoom(17);
+            map.setZoom(19);
 
             $.get('rest/post', {
               name: name,
@@ -64,9 +64,10 @@
             console.log(data);
             for (var i=0; i<data.length; i++) {
               var person = data[i];
-              if (markers[i])
+              if (markers[i]) {
                markers[i].setPosition(new google.maps.LatLng(parseFloat(person.loc.y), parseFloat(person.loc.x)));
-              else
+               markers[i].setMap(map);
+              } else
                 markers[i] = new google.maps.Marker({
                   position: new google.maps.LatLng(parseFloat(person.loc.y), parseFloat(person.loc.x)),
                   map: map,
