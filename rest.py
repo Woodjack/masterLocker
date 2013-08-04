@@ -24,10 +24,9 @@ def getLiveMONGO():
 	data=[]
 	coll = db.events
 	query = coll.distinct('name')
-	end = datetime.datetime.utcnow()
-	start = end - datetime.timedelta(seconds = 30)
+	date = datetime.datetime.utcnow() - datetime.timedelta(seconds = 60)
 	for person in query:
-		personinfo = coll.find({'name': person},{'_id': 0}).sort('date',1).limit(1)
+		personinfo = coll.find({'name': person, "date": { "$gte": date } },{'_id': 0}).sort('date',1).limit(1)
 		getResults = dumps(personinfo)
 		if getResults != "[]":
 			try:

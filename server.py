@@ -50,6 +50,7 @@ class getCurrentRequestHandler(tornado.web.RequestHandler):
 class postRequestHandler(tornado.web.RequestHandler):
     def get(self):
         data={}
+        data['date'] = datetime.datetime.utcnow()
         if self.get_argument('cookie'):
             data['cookie'] = self.get_argument('cookie')
         if self.get_argument('name'):
