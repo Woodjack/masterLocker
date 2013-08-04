@@ -18,7 +18,6 @@ def getMONGO():
 def postNewUser(data):
 	coll = db.users
 	coll.insert(data)
-	return("Successful mongodb upload bitches!!! ")
 
 def getLiveMONGO():
 	data=[]

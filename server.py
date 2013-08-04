@@ -9,7 +9,6 @@ import datetime
 import cookies
 from cookies import bakeCookie
 from bson.json_util import dumps  ##This is used to produce a properly formated json-array,
-
 import ast
 port = int(os.environ.get('PORT', '8080'))
 
@@ -65,25 +64,18 @@ class postRequestHandler(tornado.web.RequestHandler):
 
 class cookieRequestHandler(tornado.web.RequestHandler):
     def get(self):
-        cookieName = str('wheresjack')
+        cookieName = str('gofindjack')
         cookieValue = cookies.bakeCookie()
         data = {}
         data['cookie'] = cookieValue
         data['date'] = datetime.datetime.utcnow()
-        if self.get_argument('name'):
-            data['name'] = self.get_argument('name')
-        if self.get_argument('x') and self.get_argument('y'):
-            data['loc'] = {}
-            data['loc']['x'] = float(self.get_argument('x'))
-            data['loc']['y'] = float(self.get_argument('y'))
-        results = rest.postNewUser(data)
-        self.write("your cookie is:   " + str(cookieValue))
-
+        data['name'] = self.get_argument('name')
+        rest.postNewUser(data)
+        self.write(str(cookieValue))
 
 class dumpallpointsHandler(tornado.web.RequestHandler):
     def get(self):
         self.write( rest.dumpallpoints() )
-
 
 if __name__ == "__main__":
     tornado.options.parse_command_line()
