@@ -55,7 +55,7 @@ def getCurrentMONGO():
 def postLocation(newLocation):
 	coll = db.events
 	coll.insert(newLocation)
-	return("Successful mongodb upload bitches!!!   " + str(newLocation))
+	return("Successful mongodb upload bitches!!!   ")
 
 def dumpallpoints():
 	data=[]

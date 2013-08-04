@@ -51,14 +51,11 @@ class postRequestHandler(tornado.web.RequestHandler):
     def get(self):
         data={}
         data['date'] = datetime.datetime.utcnow()
-        if self.get_argument('cookie'):
-            data['cookie'] = self.get_argument('cookie')
-        if self.get_argument('name'):
-            data['name'] = self.get_argument('name')
-        if self.get_argument('x') and self.get_argument('y'):
-            data['loc'] = {}
-            data['loc']['x'] = float(self.get_argument('x'))
-            data['loc']['y'] = float(self.get_argument('y'))
+        data['cookie'] = self.get_argument('cookie')
+        data['name'] = self.get_argument('name')
+        data['loc'] = {}
+        data['loc']['x'] = float(self.get_argument('x'))
+        data['loc']['y'] = float(self.get_argument('y'))
         results = rest.postLocation(data)
         self.write(results)
 
@@ -71,12 +68,11 @@ class cookieRequestHandler(tornado.web.RequestHandler):
             data['cookie'] = cookieValue
             data['date'] = datetime.datetime.utcnow()
             data['name'] = self.get_argument('name')
-            self.write(str(cookieValue))
+            self.write('cookie baked!!')
             self.set_cookie( cookieName , str(cookieValue) )
             rest.postNewUser(data)
         else:
-            cookieValue = self.get_cookie(cookieName, default=None)
-            self.write(cookieValue)
+            self.write('cookie already there')
 
 class dumpallpointsHandler(tornado.web.RequestHandler):
     def get(self):
