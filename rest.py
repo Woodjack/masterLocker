@@ -24,18 +24,22 @@ def getLiveMONGO():
 	data=[]
 	coll = db.events
 	query = coll.distinct('name')
-	#queryDate = datetime.datetime.utcnow() - datetime.timedelta(seconds = 60)
+	end = datetime.datetime.utcnow()
+	start = end - datetime.timedelta(seconds = 30)
 	for person in query:
 		personinfo = coll.find({'name': person},{'_id': 0}).sort('date',1).limit(1)
 		getResults = dumps(personinfo)
-		try:
-			data.append( ast.literal_eval(getResults)[0] )
-		except IndexError:
-			print('index error!!!')
+		if getResults != "[]":
+			try:
+				data.append( ast.literal_eval(getResults)[0] )
+			except IndexError:
+				print('index error!!!')
+		else:
+			print('no getResults :(')
 	if data:
 	    return( dumps(data) )
 	else:
-	    return( str(queryDate) + "     No results" )
+	    return("     No results" )
 
 def getCurrentMONGO():
 	data=[]
@@ -53,7 +57,7 @@ def getCurrentMONGO():
 def postLocation(newLocation):
 	coll = db.events
 	coll.insert(newLocation)
-	return("Successful mongodb upload bitches!!!     \n" + str(newLocation))
+	return("Successful mongodb upload bitches!!!   " + str(newLocation))
 
 def dumpallpoints():
 	data=[]
