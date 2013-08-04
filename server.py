@@ -30,7 +30,6 @@ class Application(tornado.web.Application):
         ]
         tornado.web.Application.__init__(self, handlers, debug=True)
 
-
 class indexhtmlhandler(tornado.web.RequestHandler):
 	def get(self):
 		self.render("static/index.html")
@@ -61,15 +60,15 @@ class postRequestHandler(tornado.web.RequestHandler):
 
 class cookieRequestHandler(tornado.web.RequestHandler):
     def get(self):
-        cookieName = str('gofindjack')
-        if not self.get_cookie( cookieName ):
-            cookieValue = cookies.bakeCookie()
+        if not self.get_cookie( 'gofindjack_id' ):
+            id_cookieValue = cookies.bakeCookie()
             data = {}
-            data['cookie'] = cookieValue
+            data['cookie'] = id_cookieValue
             data['date'] = datetime.datetime.utcnow()
             data['name'] = self.get_argument('name')
             self.write('cookie baked!!')
-            self.set_cookie( cookieName , str(cookieValue) )
+            self.set_cookie( 'gofindjack_id' , str(id_cookieValue) ,expires_days=14 )
+            self.set_cookie( 'gofindjack_name' , str(data['name']) ,expires_days=14 )
             rest.postNewUser(data)
         else:
             self.write('cookie already there')
