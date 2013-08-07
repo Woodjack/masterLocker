@@ -24,7 +24,7 @@ def getLive(cookie):
 	coll = db.events
 	query = coll.distinct('cookie')
 	date = datetime.datetime.utcnow() - datetime.timedelta(seconds = 180)
-	for person in query:
+	for cookie in query:
 		personinfo = coll.find({'cookie': cookie, "date": { "$gte": date } },{'_id': 0,'date':0,'cookie':0}).sort('date',1).limit(1)
 		getResults = dumps(personinfo)
 		if getResults != "[]":
