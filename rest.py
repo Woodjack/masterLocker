@@ -19,6 +19,10 @@ def postNewUser(data):
 	coll = db.users
 	coll.insert(data)
 
+def updateUserName(data):
+	coll = db.users
+	coll.update(data)
+
 def getLive(cookie):
 	data=[]
 	coll = db.events

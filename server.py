@@ -15,7 +15,6 @@ port = int(os.environ.get('PORT', '8080'))
 from tornado.options import define, options
 define("port", default=port, help="run on the given port", type=int) #port options for webServer
 
-
 class Application(tornado.web.Application):
     def __init__(self):
         handlers = [
@@ -24,6 +23,7 @@ class Application(tornado.web.Application):
             (r"/rest/get/current", getCurrentRequestHandler),
             (r"/admin/rest/dumpallpoints", dumpallpointsHandler),
             (r"/cookie", cookieRequestHandler),
+            (r"/updateName", updateNameRequestHandler),
         	(r"/(.+)", tornado.web.StaticFileHandler, {"path": "static"}),
         	(r"/", indexhtmlhandler)
         ]
@@ -73,6 +73,21 @@ class cookieRequestHandler(tornado.web.RequestHandler):
             rest.postNewUser(data)
         else:
             self.write('cookie already there')
+
+class updateNameRequestHandler(tornado.web.RequestHandler):
+    def get(self):
+        try:
+            id_cookieValue = cookies.bakeCookie()
+            data = {}
+            data['cookie'] = id_cookieValue
+            data['date'] = datetime.datetime.utcnow()
+            data['name'] = self.get_argument('name')
+            self.write('cookie updated!!')
+            self.set_cookie( 'id' , str(id_cookieValue) ,expires_days=14 )
+            self.set_cookie( 'name' , str(data['name']) ,expires_days=14 )
+            rest.updateUserName(data)
+        except:
+            self.write('no cookie found')
 
 class dumpallpointsHandler(tornado.web.RequestHandler):
     def get(self):
