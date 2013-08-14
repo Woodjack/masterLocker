@@ -25,15 +25,20 @@ def updateUserName(data):
 
 def getLive(cookie):
 	data=[]
-	coll = db.events
-	query = coll.distinct('cookie')
+	eventsDB = db.events
+	usersDB = db.users
+	query =	usersDB.distinct('cookie')
 	date = datetime.datetime.utcnow() - datetime.timedelta(seconds = 180)
 	for cookie in query:
-		personinfo = coll.find({'cookie': cookie, "date": { "$gte": date } },{'_id': 0,'date':0,'cookie':0}).sort('date',1).limit(1)
+		personinfo = eventsDB.find({'cookie': cookie, "date": { "$gte": date } },{'_id': 0,'date':0,'cookie':0}).sort('date',1).limit(1)
 		getResults = dumps(personinfo)
 		if getResults != "[]":
 			try:
-				data.append( ast.literal_eval(getResults)[0] )
+				results = ast.literal_eval(getResults)[0]
+				results['name'] = dumps(usersDB.find({'cookie': cookie},{'_id': 0,'date':0,'cookie':0}))
+				print(results)
+				print(' type:  ' + str(type(results)))
+				data.append( results )
 			except IndexError:
 				print('index error!!!')
 		else:

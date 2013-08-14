@@ -23,7 +23,7 @@ class Application(tornado.web.Application):
             (r"/rest/get/current", getCurrentRequestHandler),
             (r"/admin/rest/dumpallpoints", dumpallpointsHandler),
             (r"/cookie", cookieRequestHandler),
-            (r"/updateName", updateNameRequestHandler),
+            (r"/updatename", updateNameRequestHandler),
         	(r"/(.+)", tornado.web.StaticFileHandler, {"path": "static"}),
         	(r"/", indexhtmlhandler)
         ]
@@ -46,7 +46,7 @@ class getCurrentRequestHandler(tornado.web.RequestHandler):
 
 class postRequestHandler(tornado.web.RequestHandler):
     def get(self):
-        if self.get_cookie( 'name' ):
+        try:
             data={}
             data['date'] = datetime.datetime.utcnow()
             data['cookie'] = self.get_cookie('id')
@@ -56,23 +56,23 @@ class postRequestHandler(tornado.web.RequestHandler):
             data['loc']['y'] = float(self.get_argument('y'))
             rest.postLocation(data)
             self.write('postRequest worked!!')
-        else:
+        except:
             self.write('postRequest failed amigo, try again')
 
 class cookieRequestHandler(tornado.web.RequestHandler):
     def get(self):
         if not self.get_cookie( 'id' ):
-            id_cookieValue = cookies.bakeCookie()
             data = {}
-            data['cookie'] = id_cookieValue
+            data['cookie'] = cookies.bakeCookie()
             data['date'] = datetime.datetime.utcnow()
             data['name'] = self.get_argument('name')
-            self.write('cookie baked!!')
-            self.set_cookie( 'id' , str(id_cookieValue) ,expires_days=14 )
+            print('cookie baked!!  Username: ' + str(data['name'] ))
+            self.set_cookie( 'id' , str(data['cookie']) ,expires_days=14 )
             self.set_cookie( 'name' , str(data['name']) ,expires_days=14 )
             rest.postNewUser(data)
+            self.write('New Cookies generated successfully')
         else:
-            self.write('cookie already there')
+            self.write('Cookie already there')
 
 class updateNameRequestHandler(tornado.web.RequestHandler):
     def get(self):
