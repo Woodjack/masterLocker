@@ -36,7 +36,7 @@ class indexhtmlhandler(tornado.web.RequestHandler):
 class getLiveRequestHandler(tornado.web.RequestHandler):
     def get(self):
         if self.get_cookie('id'):
-            self.write( rest.getLive(self.get_cookie('id')) )
+            self.write( rest.getLive() )
         else:
             print('getLive  did not find a cookie')
 

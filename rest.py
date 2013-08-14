@@ -23,21 +23,20 @@ def updateUserName(data):
 	coll = db.users
 	coll.update(data)
 
-def getLive(cookie):
+
+
+def getLive():
 	data=[]
 	eventsDB = db.events
 	usersDB = db.users
-	query =	usersDB.distinct('cookie')
+	query =	eventsDB.distinct('cookie')
 	date = datetime.datetime.utcnow() - datetime.timedelta(seconds = 180)
 	for cookie in query:
 		personinfo = eventsDB.find({'cookie': cookie, "date": { "$gte": date } },{'_id': 0,'date':0,'cookie':0}).sort('date',1).limit(1)
 		getResults = dumps(personinfo)
 		if getResults != "[]":
 			try:
-				results = ast.literal_eval(getResults)[0]
-				results['name'] = dumps(usersDB.find({'cookie': cookie},{'_id': 0,'date':0,'cookie':0}))
-				print(results)
-				print(' type:  ' + str(type(results)))
+				results = ast.literal_eval(getResults)[0] #this translates getResults as a list, then grabs the first (and only) element
 				data.append( results )
 			except IndexError:
 				print('index error!!!')
@@ -46,7 +45,17 @@ def getLive(cookie):
 	if data != []:
 	    return( dumps(data) )
 	else:
-	    return("     No results" )
+	    return("getLive: No Results" )
+
+
+def getLiveWithoutMe(cookieID):
+	data = getLive()
+	data = ast.literal_eval(data) #This turns it into a list, if you want it as a dict, put a [0] in the bound
+	print(data)
+	print(type(data)) #type is a list
+
+
+
 
 
 def getCurrentMONGO():
