@@ -17,7 +17,8 @@
         , mycircle
         , centered = false
         , name
-        , ws = new WebSocket("ws://gofindjack.com/ws");
+        , ws = new WebSocket("ws://gofindjack.com/ws")
+        , wsopen = false;
 
       google.maps.visualRefresh = true;
 
@@ -56,9 +57,11 @@
                 y: position.coords.latitude
               }
             };
-
-            ws.send(JSON.stringify(datatosend));
-            console.log('sent location');
+            if (wsopen) {
+              ws.send(JSON.stringify(datatosend));
+              console.log('sent location');
+            }
+            
           });
         }
       }
@@ -89,7 +92,7 @@
       };
 
       ws.onopen = function() {
-//        ws.send('noooooooooo');
+        wsopen = true;
 
         if (getCookie('name') == null) {
           name = prompt("what's your name?");
