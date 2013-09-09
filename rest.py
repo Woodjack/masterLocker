@@ -6,14 +6,13 @@ from bson.json_util import dumps
 from bson.json_util import loads
 import ast
 
-def getLive():
+def getLive(queryList):
+
 	data=[]
 	eventsDB = db.events
-	usersDB = db.users
-	query =	eventsDB.distinct('cookie')
-	date = datetime.datetime.utcnow() - datetime.timedelta(seconds = 180)
-	for cookie in query:
-		personinfo = eventsDB.find({'cookie': cookie, "date": { "$gte": date } },{'_id': 0,'date':0,'cookie':0}).sort('date',1).limit(1)
+
+	for cookie in queryList:
+		personinfo = eventsDB.find({'cookie': cookie, {'_id': 0,'date':0,'cookie':0}).sort('date',1).limit(1)
 		getResults = dumps(personinfo)
 
 		if getResults != "[]":

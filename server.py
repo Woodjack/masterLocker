@@ -49,11 +49,6 @@ class WSHandler(tornado.websocket.WebSocketHandler):
         livedata['data'] = rest.getLive()
         self.write_message(livedata)
         self.write_message("connection acknowledged")
-        print 'type:        ' + str(type(self.id))
-        print 'id:          ' + str(self.id)
-        print 'length:      ' + str(self.clients.__len__())
-        print 'current id:  ' + str(self.clients[0].id)
-
 
     def on_message(self, message):
         clientdata = json.loads(message)
@@ -71,7 +66,14 @@ class WSHandler(tornado.websocket.WebSocketHandler):
             rest.postLocation(data)
             livedata = {}
             livedata['action'] = 'liveclients'
-            livedata['data'] = rest.getLive()
+
+            queryList = []
+            for client in self.clients:
+                queryList.append(client.id)
+
+
+            livedata['data'] = rest.getLive( queryList )
+            
             for client in self.clients:
                 client.write_message(livedata)
 
