@@ -42,7 +42,11 @@ class WSHandler(tornado.websocket.WebSocketHandler):
         self.clients.append(self)
         self.id = cookies.bakeCookie()
         print 'new connection id=', self.id
-        self.write_message("connection acknowledged")
+
+        livedata = {}
+        livedata['action'] = 'liveclients'
+        livedata['data'] = rest.getLive()
+        self.write_message(livedata)
 
     def on_message(self, message):
         clientdata = json.loads(message)
