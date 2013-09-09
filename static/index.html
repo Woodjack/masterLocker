@@ -126,7 +126,10 @@
         console.log(evt.data);
       };
 
+
+
       function updatepoints(data) {
+
         for (var i=0; i<data.length; i++) {
           var person = data[i]
           , point = markers[i];
@@ -138,13 +141,17 @@
               position: new google.maps.LatLng(person.loc.y, person.loc.x),
               map: map,
 //                  animation: google.maps.Animation.DROP,
-              title: person.name
+              title: person.name,
+              fillColor: 'yellow'
             });
         }
         for (; i<markers.length; i++) {
           markers[i].setMap(null);
         }
       }
+
+
+
 
       google.maps.event.addDomListener(window, 'load', initialize);
     </script>
