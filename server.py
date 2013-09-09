@@ -1,5 +1,6 @@
 import os
 import tornado.httpserver
+import tornado.websocket
 import tornado.ioloop
 import tornado.options
 import tornado.web
@@ -8,8 +9,9 @@ import rest
 import datetime
 import cookies
 from cookies import bakeCookie
-from bson.json_util import dumps  ##This is used to produce a properly formated json-array,
+import json
 import ast
+
 port = int(os.environ.get('PORT', '8080'))
 
 from tornado.options import define, options
@@ -18,12 +20,11 @@ define("port", default=port, help="run on the given port", type=int) #port optio
 class Application(tornado.web.Application):
     def __init__(self):
         handlers = [
-            (r"/rest/post", postRequestHandler),
-            (r"/rest/get/live", getLiveRequestHandler),
             (r"/rest/get/current", getCurrentRequestHandler),
             (r"/admin/rest/dumpallpoints", dumpallpointsHandler),
             (r"/cookie", cookieRequestHandler),
             (r"/updatename", updateNameRequestHandler),
+            (r"/ws", WSHandler),
         	(r"/(.+)", tornado.web.StaticFileHandler, {"path": "static"}),
         	(r"/", indexhtmlhandler)
         ]
@@ -33,31 +34,9 @@ class indexhtmlhandler(tornado.web.RequestHandler):
 	def get(self):
 		self.render("static/index.html")
 
-class getLiveRequestHandler(tornado.web.RequestHandler):
-    def get(self):
-        if self.get_cookie('id'):
-            self.write( rest.getLive() )
-        else:
-            print('getLive  did not find a cookie')
-
 class getCurrentRequestHandler(tornado.web.RequestHandler):
     def get(self):
         self.write( rest.getCurrentMONGO() )
-
-class postRequestHandler(tornado.web.RequestHandler):
-    def get(self):
-        try:
-            data={}
-            data['date'] = datetime.datetime.utcnow()
-            data['cookie'] = self.get_cookie('id')
-            data['name'] = self.get_cookie('name')
-            data['loc'] = {}
-            data['loc']['x'] = float(self.get_argument('x'))
-            data['loc']['y'] = float(self.get_argument('y'))
-            rest.postLocation(data)
-            self.write('postRequest worked!!')
-        except:
-            self.write('postRequest failed amigo, try again')
 
 class cookieRequestHandler(tornado.web.RequestHandler):
     def get(self):
@@ -92,6 +71,48 @@ class updateNameRequestHandler(tornado.web.RequestHandler):
 class dumpallpointsHandler(tornado.web.RequestHandler):
     def get(self):
         self.write( rest.dumpallpoints() )
+
+class WSHandler(tornado.websocket.WebSocketHandler):
+    clients = []
+
+    def open(self):
+        self.clients.append(self)
+        self.id = cookies.bakeCookie()
+        print 'new connection id=', self.id
+        self.write_message("connection acknowledged")
+
+    def on_message(self, message):
+        print self.clients
+
+        clientdata = json.loads(message)
+
+        print 'clientdata', repr(clientdata)
+        
+        action = clientdata['action']
+
+        if action == 'updatelocation':
+            data = {}
+            data['date'] = datetime.datetime.utcnow()
+            data['cookie'] = self.id
+            data['name'] = self.name
+            data['loc'] = clientdata['data']
+            rest.postLocation(data)
+
+            livedata = {}
+            livedata['action'] = 'liveclients'
+            livedata['data'] = rest.getLive()
+
+            for client in self.clients:
+                client.write_message(livedata)
+        elif action == 'setname':
+            self.name = clientdata['data']
+
+
+    def on_close(self):
+        self.clients.remove(self)
+        print 'closed connection'
+
+
 
 if __name__ == "__main__":
     tornado.options.parse_command_line()
