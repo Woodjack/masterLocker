@@ -46,7 +46,12 @@ class WSHandler(tornado.websocket.WebSocketHandler):
         print 'new connection id=', self.id
         livedata = {}
         livedata['action'] = 'liveclients'
-        livedata['data'] = rest.getLive()
+
+        queryList = []
+        for client in self.clients:
+            queryList.append(client.id)
+        livedata['data'] = rest.getLive(queryList)
+        
         self.write_message(livedata)
         self.write_message("connection acknowledged")
 
@@ -71,8 +76,7 @@ class WSHandler(tornado.websocket.WebSocketHandler):
             for client in self.clients:
                 queryList.append(client.id)
 
-
-            livedata['data'] = rest.getLive( queryList )
+            livedata['data'] = rest.getLive(queryList)
             
             for client in self.clients:
                 client.write_message(livedata)
