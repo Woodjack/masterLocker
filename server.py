@@ -117,7 +117,7 @@ class WSHandler(tornado.websocket.WebSocketHandler):
 if __name__ == "__main__":
     tornado.options.parse_command_line()
     http_server = tornado.httpserver.HTTPServer(Application())
-    http_server.listen(options.port)
+    http_server.listen(80)
     tornado.ioloop.IOLoop.instance().start()
 
 
