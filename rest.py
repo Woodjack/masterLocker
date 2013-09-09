@@ -6,13 +6,14 @@ from bson.json_util import dumps
 from bson.json_util import loads
 import ast
 
+
 def getLive(queryList):
 
 	data=[]
 	eventsDB = db.events
 
 	for cookie in queryList:
-		personinfo = eventsDB.find({'cookie': cookie, {'_id': 0,'date':0,'cookie':0}).sort('date',1).limit(1)
+		personinfo = eventsDB.find( {'cookie': cookie, {'_id': 0,'date':0,'cookie':0} } ).sort('date',1).limit(1)
 		getResults = dumps(personinfo)
 
 		if getResults != "[]":
@@ -28,9 +29,15 @@ def getLive(queryList):
 	else:
 	    return("getLive: No Results" )
 
+
+
+
 def postLocation(newLocation):
 	coll = db.events
 	coll.insert(newLocation)
+
+
+
 
 def dumpallpoints():
 	data=[]
