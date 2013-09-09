@@ -53,6 +53,8 @@ class WSHandler(tornado.websocket.WebSocketHandler):
         print 'id:        ' + str(self.id)
         print 'length:    ' + str(self.clients.__len__())
         print 'cleints:   ' + str(self.clients)
+        print 'cleints[0]:   ' + str(self.clients[0])
+        print 'cleints[all]:   ' + str(self.clients[:])
 
     def on_message(self, message):
         clientdata = json.loads(message)
