@@ -12,7 +12,7 @@ from cookies import bakeCookie
 import json
 import ast
 
-port = int(os.environ.get('PORT', '8080'))
+port = int(os.environ.get('PORT', 8080))
 
 from tornado.options import define, options
 define("port", default=port, help="run on the given port", type=int) #port options for webServer
@@ -35,6 +35,8 @@ class dumpallpointsHandler(tornado.web.RequestHandler):
     def get(self):
         self.write( rest.dumpallpoints() )
 
+
+
 class WSHandler(tornado.websocket.WebSocketHandler):
     clients = []
 
@@ -42,11 +44,7 @@ class WSHandler(tornado.websocket.WebSocketHandler):
         self.clients.append(self)
         self.id = cookies.bakeCookie()
         print 'new connection id=', self.id
-
-        livedata = {}
-        livedata['action'] = 'liveclients'
-        livedata['data'] = rest.getLive()
-        self.write_message(livedata)
+        self.write_message("connection acknowledged")
 
     def on_message(self, message):
         clientdata = json.loads(message)
@@ -82,6 +80,7 @@ class WSHandler(tornado.websocket.WebSocketHandler):
 if __name__ == "__main__":
     tornado.options.parse_command_line()
     http_server = tornado.httpserver.HTTPServer(Application())
+    print port
     http_server.listen(80)
     tornado.ioloop.IOLoop.instance().start()
 
