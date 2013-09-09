@@ -51,9 +51,8 @@ class WSHandler(tornado.websocket.WebSocketHandler):
         for client in self.clients:
             queryList.append(client.id)
         livedata['data'] = rest.getLive(queryList)
-        
+
         self.write_message(livedata)
-        self.write_message("connection acknowledged")
 
     def on_message(self, message):
         clientdata = json.loads(message)
@@ -83,6 +82,10 @@ class WSHandler(tornado.websocket.WebSocketHandler):
 
         elif action == 'setname':
             self.name = clientdata['data']
+
+        elif action == 'postmessagemarker':
+            newMessage = clientdata['data']
+            rest.postMessageMarker(newMessage)
 
 
     def on_close(self):
