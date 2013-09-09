@@ -49,14 +49,10 @@ class WSHandler(tornado.websocket.WebSocketHandler):
         livedata['data'] = rest.getLive()
         self.write_message(livedata)
         self.write_message("connection acknowledged")
-        print 'type:      ' + str(type(self.id))
-        print 'id:        ' + str(self.id)
-        print 'length:    ' + str(self.clients.__len__())
-        print 'cleints:   ' + str(self.clients)
-        print 'cleints[0]:   ' + str(self.clients[0])
-        print 'cleints[all]:   '
-        for client in self.clients:
-            print client
+        print 'type:        ' + str(type(self.id))
+        print 'id:          ' + str(self.id)
+        print 'length:      ' + str(self.clients.__len__())
+        print 'current id:  ' + str(self.clients[0].id)
 
 
     def on_message(self, message):
