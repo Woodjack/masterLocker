@@ -130,6 +130,20 @@
 
       function updatepoints(data) {
 
+        var iconUser = new google.maps.MarkerImage(
+            'images/icecreamPink.svg', //url
+            new google.maps.Size(28.225, 50), //size
+            new google.maps.Point(0,0), //origin
+            new google.maps.Point(anchor_left, anchor_top) //anchor 
+            );
+
+        var iconOthers = new google.maps.MarkerImage(
+            'images/icecreamBlue.svg', //url
+            new google.maps.Size(28.225, 50), //size
+            new google.maps.Point(0,0), //origin
+            new google.maps.Point(anchor_left, anchor_top) //anchor 
+            );
+
 
 
 
@@ -148,7 +162,7 @@
 //                  animation: google.maps.Animation.DROP,
               title: person.name
             });
-            markers[i].setIcon('images/icecream.svg')
+            markers[i].setIcon(iconOthers)
         }
         for (; i<markers.length; i++) {
           markers[i].setMap(null);
