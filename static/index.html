@@ -156,9 +156,9 @@
               position: new google.maps.LatLng(person.loc.y, person.loc.x),
               map: map,
 //                  animation: google.maps.Animation.DROP,
-              title: person.name,
-              icon: 'images/icecreamBlue.svg'
+              title: person.name
             });
+            markers[i].setIcon('images/icecreamBlue.svg')
         }
         for (; i<markers.length; i++) {
           markers[i].setMap(null);
