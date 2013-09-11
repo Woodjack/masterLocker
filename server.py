@@ -89,7 +89,7 @@ class WSHandler(tornado.websocket.WebSocketHandler):
 
 
     def on_close(self):
-        self.clients.remove(self)
+        self.clients.remove[self.id]
         print 'closed connection'
 
 
