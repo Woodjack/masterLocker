@@ -160,16 +160,17 @@
         if (myLocation) {
           myLocation.setPosition(pos)
           myLocation.setMap(map)
-        }
-        else
+          console.log('updateMyLocation Updated')
+        } else {
           myLocation = new google.maps.Marker({
               position: pos,
               map: map,
               title: person.name,
               icon: 'images/icecreampink.png'
             });
-            
+          console.log('updateMyLocation Updated')
         }
+      }
 
 
 
