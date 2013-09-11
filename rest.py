@@ -43,7 +43,7 @@ def getLive(queryList, myID):
 					print('index error!!!')
 			else:
 				continue
-		else
+		else:
 			print('found Me')
 	if data != []:
 	    return( dumps(data) )
