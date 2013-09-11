@@ -38,7 +38,7 @@ class dumpallpointsHandler(tornado.web.RequestHandler):
 
 
 class WSHandler(tornado.websocket.WebSocketHandler):
-    clients = []
+    clients = {}
 
     def open(self):
         self.clients.append(self)
@@ -50,7 +50,7 @@ class WSHandler(tornado.websocket.WebSocketHandler):
         queryList = []
         for client in self.clients:
             queryList.append(client.id)
-        livedata['data'] = rest.getLive(queryList)
+        livedata['data'] = rest.getLive(queryList, self.id)
 
         self.write_message(livedata)
 
