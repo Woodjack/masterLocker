@@ -135,6 +135,7 @@
         for (var i=0; i<data.length; i++) {
           var person = data[i]
           , point = markers[i];
+          
           if (point) {
             point.setPosition(new google.maps.LatLng(person.loc.y, person.loc.x));
             point.setMap(map);
@@ -143,9 +144,10 @@
               position: new google.maps.LatLng(person.loc.y, person.loc.x),
               map: map,
 //                  animation: google.maps.Animation.DROP,
-              title: person.name
+              title: person.name,
+              icon: 'images/icecreamblue.png'
             });
-            markers[i].setIcon('images/icecream.svg')
+            
         }
         for (; i<markers.length; i++) {
           markers[i].setMap(null);
