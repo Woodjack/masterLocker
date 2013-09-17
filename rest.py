@@ -88,7 +88,7 @@ def getMessageMarkers():
 def dumpallpoints():
 	data=[]
 	coll = db.events
-	for point in db.events.find().sort('date', 1).limit(1000)
+	for point in db.events.find().sort('date', 1).limit(1000):
 		data.append( point )
 	if data:
 		return( dumps(data) )
